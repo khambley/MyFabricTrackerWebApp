@@ -26,7 +26,9 @@ namespace MyFabricTrackerWebApp
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllersWithViews();
-			services.AddDbContext<FabricTrackerDbContext>(opts => {
+
+			services.AddDbContext<FabricTrackerDbContext>(opts =>
+			{
 				opts.UseSqlServer(
 				Configuration["ConnectionStrings:DefaultConnection"]);
 			});

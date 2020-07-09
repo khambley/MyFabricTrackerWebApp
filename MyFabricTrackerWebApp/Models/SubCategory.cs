@@ -7,10 +7,12 @@ namespace MyFabricTrackerWebApp.Models
 {
 	public class SubCategory
 	{
-		public int SubCategoryId { get; set; }
+		public long SubCategoryId { get; set; }
 		public string SubCategoryName { get; set; }
-		public int MainCategoryId { get; set; }
+		public long MainCategoryId { get; set; }
 		public virtual MainCategory MainCategory { get; set; }
+
+
 
 	}
 }

@@ -1,0 +1,95 @@
+﻿@model IEnumerable<MyFabricTrackerWebApp.Models.Fabric>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FabricItemCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FabricName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageFileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MainCategory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SubCategory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FabricType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FabricNotes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FabricSourceName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FabricSourceUrl)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateAdded)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateModified)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FabricItemCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FabricName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageFileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MainCategory.MainCategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubCategory.SubCategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FabricType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FabricNotes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FabricSourceName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FabricSourceUrl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateAdded)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateModified)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FabricID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FabricID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FabricID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
