@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +15,12 @@ namespace MyFabricTrackerWebApp.Controllers
     public class FabricsController : Controller
     {
         private readonly FabricTrackerDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public FabricsController(FabricTrackerDbContext context)
+        public FabricsController(FabricTrackerDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Fabrics
@@ -61,9 +66,31 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified,IsDeleted")] Fabric fabric)
+        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified,IsDeleted")] Fabric fabric, IFormFile imageFile)
         {
+            //Set the auto-generated Item Code 
+            fabric.FabricItemCode = CreateUniqueItemCode();
+
+            if (imageFile != null)
+            {
+                string webRootPath = _webHostEnvironment.WebRootPath;
+
+                //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
+                var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
+                
+                //Set the Image File Path.
+                var filePath = Path.Combine(webRootPath + "\\images\\", uniqueFileName);
+
+                //Save the Image File to folder on file system.
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+                fabric.ImageFileName = uniqueFileName;
+            }
+
             fabric.DateAdded = DateTime.Now;
+            
             if (ModelState.IsValid)
             {
                 _context.Add(fabric);
@@ -165,6 +192,51 @@ namespace MyFabricTrackerWebApp.Controllers
         private bool FabricExists(long id)
         {
             return _context.Fabrics.Any(e => e.FabricID == id);
+        }
+
+        private string GetUniqueFileName(string fileName)
+        {
+            fileName = Path.GetFileName(fileName);
+            return Path.GetFileNameWithoutExtension(fileName)
+                + "_"
+                + Guid.NewGuid().ToString().Substring(0, 4)
+                + Path.GetExtension(fileName);
+        }
+        private string CreateUniqueItemCode()
+        {
+            var lastFabricinDB = _context.Fabrics
+                .OrderByDescending(f => f.FabricID)
+                .FirstOrDefault();
+            var newFabricId = lastFabricinDB.FabricID + 1;
+            string leadingZeroes = "";
+            if (newFabricId > 0 && newFabricId < 10)
+            {
+                leadingZeroes = "0000";
+            }
+            else if (newFabricId > 9 && newFabricId < 100)
+            {
+                leadingZeroes = "000";
+            }
+            else if (newFabricId > 99 && newFabricId < 1000)
+            {
+                leadingZeroes = "00";
+            }
+            else if (newFabricId > 999 && newFabricId < 10000)
+            {
+                leadingZeroes = "0";
+            }
+            else
+            {
+                leadingZeroes = "";
+            }
+            var uniqueFabricItemCode = "FAB" 
+                + "-"
+                + leadingZeroes
+                + newFabricId.ToString()
+                + "-"
+                + Guid.NewGuid().ToString().ToUpper().Substring(0, 4);
+
+            return uniqueFabricItemCode;
         }
     }
 }
