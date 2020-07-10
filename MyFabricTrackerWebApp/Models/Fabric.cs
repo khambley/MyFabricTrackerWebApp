@@ -21,12 +21,20 @@ namespace MyFabricTrackerWebApp.Models
 		public long SubCategoryId { get; set; }
 		public virtual SubCategory SubCategory { get; set; }
 		public string FabricType { get; set; }
+		public string FabricWidth { get; set; }
+		public string BackgroundColor { get; set; }
+		public string? AccentColor1 { get; set; }
+		public string? AccentColor2 { get; set; }
+		public string? AccentColor3 { get; set; }
 		public string FabricNotes { get; set; }
 		public string FabricSourceName { get; set; }
 		public string FabricSourceUrl { get; set; }
 		public DateTime DateAdded { get; set; }
 		public DateTime? DateModified { get; set; }
+		public bool IsDiscontinued { get; set; }
 		public bool IsDeleted { get; set; }
+		public bool IsPopular { get; set; }
+
 
 
 

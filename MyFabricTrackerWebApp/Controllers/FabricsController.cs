@@ -67,7 +67,7 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified,IsDeleted")] Fabric fabric, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,FabricSourceName,AccentColor3,FabricSourceUrl,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
         {
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();
