@@ -48,8 +48,11 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: Fabrics/Create
         public IActionResult Create()
         {
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryId");
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryId");
+            List<MainCategory> mainCategoriesList = _context.MainCategories.ToList();
+            mainCategoriesList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "--Select Main Category--" });
+            
+            ViewData["MainCategoryId"] = new SelectList(mainCategoriesList, "MainCategoryId", "MainCategoryName");
+            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName");
             return View();
         }
 
@@ -58,16 +61,17 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified")] Fabric fabric)
+        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified,IsDeleted")] Fabric fabric)
         {
+            fabric.DateAdded = DateTime.Now;
             if (ModelState.IsValid)
             {
                 _context.Add(fabric);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryId", fabric.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryId", fabric.SubCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
             return View(fabric);
         }
 
@@ -84,8 +88,8 @@ namespace MyFabricTrackerWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryId", fabric.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryId", fabric.SubCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
             return View(fabric);
         }
 
@@ -94,8 +98,9 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified")] Fabric fabric)
+        public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified,IsDeleted")] Fabric fabric)
         {
+            fabric.DateAdded = DateTime.Now;
             if (id != fabric.FabricID)
             {
                 return NotFound();
@@ -121,8 +126,8 @@ namespace MyFabricTrackerWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryId", fabric.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryId", fabric.SubCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
+            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
             return View(fabric);
         }
 

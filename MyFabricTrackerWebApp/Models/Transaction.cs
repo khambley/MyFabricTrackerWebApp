@@ -14,6 +14,8 @@ namespace MyFabricTrackerWebApp.Models
 		public int? FatQtrQty { get; set; }
 		public string Reason { get; set; }
 		public DateTime TransactionDate { get; set; }
+		public bool IsDeleted { get; set; }
+
 
 
 	}

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<MyFabricTrackerWebApp.Models.MainCategory>
+
+@{
+    ViewData["Title"] = "Main Categories List";
+}
+
+<h1>Main Categories List</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Main Category Name
+            </th>
+            <th>
+                Is Deleted?
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.MainCategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsDeleted)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MainCategoryId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MainCategoryId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MainCategoryId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

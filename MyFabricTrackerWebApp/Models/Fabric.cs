@@ -15,7 +15,6 @@ namespace MyFabricTrackerWebApp.Models
 		public string FabricName { get; set; }
 		public string ImageFileName { get; set; }
 		[NotMapped]
-		[Display(Name="File")]
 		public IFormFile ImageFile { get; set; }
 		public long MainCategoryId { get; set; }
 		public virtual MainCategory MainCategory { get; set; }
@@ -27,6 +26,8 @@ namespace MyFabricTrackerWebApp.Models
 		public string FabricSourceUrl { get; set; }
 		public DateTime DateAdded { get; set; }
 		public DateTime? DateModified { get; set; }
+		public bool IsDeleted { get; set; }
+
 
 
 

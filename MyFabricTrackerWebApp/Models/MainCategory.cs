@@ -10,6 +10,8 @@ namespace MyFabricTrackerWebApp.Models
 		public long MainCategoryId { get; set; }
 		public string MainCategoryName { get; set; }
 		public List<SubCategory> SubCategories { get; set; }
+		public bool IsDeleted { get; set; }
+
 
 	}
 }
