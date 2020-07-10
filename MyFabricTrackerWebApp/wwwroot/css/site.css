@@ -9,6 +9,9 @@ a.navbar-brand {
 .no-border {
     border: 0px;
 }
+.no-padding-left {
+    padding-left: 0em;
+}
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
