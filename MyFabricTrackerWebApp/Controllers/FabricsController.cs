@@ -54,14 +54,34 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: Fabrics/Create
         public IActionResult Create()
         {
-            List<MainCategory> mainCategoriesList = _context.MainCategories.ToList();
-            mainCategoriesList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "--Select Main Category--" });
-            
-            ViewData["MainCategoryId"] = new SelectList(mainCategoriesList, "MainCategoryId", "MainCategoryName");
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName");
+            List<MainCategory> mainCategoryList = new List<MainCategory>();
+
+            // ------ Getting Data from Database Using EF Core ------
+            mainCategoryList = _context.MainCategories
+                        .OrderBy(mc => mc.MainCategoryName).ToList();
+
+            // ------ Inserting Default value "Select" in List ------
+            mainCategoryList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "Select" });
+
+            // ------ Assigning mainCategoryList to ViewBag.MainCategoryList ------
+            ViewBag.MainCategoryList = mainCategoryList;
             return View();
         }
+        public JsonResult GetSubCategoryList(int MainCategoryId)
+        {
+            List<SubCategory> subCategoryList = new List<SubCategory>();
 
+            // ------ Getting Data from Database Using EF Core ------
+            subCategoryList = (from subcategory in _context.SubCategories
+                               where subcategory.MainCategoryId == MainCategoryId
+                               orderby subcategory.SubCategoryName ascending
+                               select subcategory).ToList();
+
+            // ------ Inserting SubCategory Select Items into List
+            subCategoryList.Insert(0, new SubCategory { SubCategoryId = 0, SubCategoryName = "Select" });
+
+            return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName"));
+        }
         // POST: Fabrics/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
