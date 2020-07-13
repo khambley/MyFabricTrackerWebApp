@@ -1,0 +1,52 @@
+﻿@model MyFabricTrackerWebApp.Models.Fabric
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var items = "<option value='0'>Select</option>";
+        $('#SubCategoryId').html(items);
+        $('#FabricId').html(items);
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#MainCategoryId').change(function () {
+            var url = '@Url.Content("~/")' + "Fabrics/GetSubCategoryList";
+            var ddlsource = "#MainCategoryId";
+            $.getJSON(url, { MainCategoryId: $(ddlsource).val() }, function (data) {
+                var items = '';
+                $("#SubCategoryId").empty();
+                $.each(data, function (i, subcategory) {
+                    items += "<option value='" + subcategory.value + "'>" + subcategory.text + "</option>";
+                });
+                $('#SubCategoryId').html(items);
+            var items
+            });
+        });
+        $('#SubCategoryId').change(function () {
+            var url = '@Url.Content("~/")' + "Fabrics/GetFabricsList";
+            var ddlsource = "#SubCategoryId";
+            $.getJSON(url, { SubCategoryId: $(ddlsource).val() }, function (data) {
+                var items = '';
+                $("#FabricId").empty();
+                $.each(data, function (i, fabric) {
+                    items += "<option value='" + fabric.value + "'>" + fabric.text + "</option>";
+                });
+                $('#FabricId').html(items);
+            var items
+            });
+        });
+    });
+</script>
+<div class="form-group">
+    <div class="alert-danger" asp-validation-summary="ModelOnly"></div>
+    <label class="control-label">Main Category</label>
+    <select asp-for="MainCategoryId"
+            class="form-control"
+            asp-items="@(new SelectList(@ViewBag.MainCategoryList, "MainCategoryId", "MainCategoryName"))"></select>
+</div>
+<div class="form-group">
+    <label class="control-label">SubCategory</label>
+    <select class="form-control" id="SubCategoryId" name="SubCategoryId" asp-for="SubCategoryId"
+            asp-items="@(new SelectList(string.Empty, "SubCategoryId", "SubCategoryName"))"></select>
+</div>
