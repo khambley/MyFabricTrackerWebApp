@@ -38,7 +38,7 @@
                 Source
             </th>
             <th>
-                Source Url
+                Total Yds
             </th>
             <th>
                Date Added
@@ -81,7 +81,7 @@
                 @Html.DisplayFor(modelItem => item.FabricSourceName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FabricSourceUrl)
+                @string.Format("{0:n2}", item.TotalInches / 36.00) yds
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateAdded)

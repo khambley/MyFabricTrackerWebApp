@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<MyFabricTrackerWebApp.Models.Transaction>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Adjustments";
 }
 
-<h1>Index</h1>
+<h3>Inventory Adjustments</h3>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,10 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Fabric)
+                Item #
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.InchesQty)
+            </th>
+            <th>
+                Total Inches
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FatQtrQty)
@@ -25,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.Reason)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TransactionDate)
+               Date
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsDeleted)
@@ -37,10 +40,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Fabric.FabricID)
+                @Html.DisplayFor(modelItem => item.Fabric.FabricItemCode)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.InchesQty)
+            </td>
+            <td>
+                @item.Fabric.TotalInches
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FatQtrQty)
@@ -49,7 +55,7 @@
                 @Html.DisplayFor(modelItem => item.Reason)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TransactionDate)
+                @item.TransactionDate.ToShortDateString()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsDeleted)

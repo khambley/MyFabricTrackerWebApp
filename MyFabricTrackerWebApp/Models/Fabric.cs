@@ -20,6 +20,7 @@ namespace MyFabricTrackerWebApp.Models
 		public virtual MainCategory MainCategory { get; set; }
 		public long SubCategoryId { get; set; }
 		public virtual SubCategory SubCategory { get; set; }
+		public long? TotalInches { get; set; }
 		public string FabricType { get; set; }
 		public string FabricWidth { get; set; }
 		public string BackgroundColor { get; set; }

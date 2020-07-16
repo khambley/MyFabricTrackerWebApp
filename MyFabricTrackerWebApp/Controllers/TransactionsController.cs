@@ -36,6 +36,7 @@ namespace MyFabricTrackerWebApp.Controllers
             var transaction = await _context.Transactions
                 .Include(t => t.Fabric)
                 .FirstOrDefaultAsync(m => m.TransactionId == id);
+            
             if (transaction == null)
             {
                 return NotFound();
@@ -47,10 +48,31 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: Transactions/Create
         public IActionResult Create()
         {
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName");
+            long fabricId = 0;
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+            
+            // 1. Create a new list to store all transaction with given FabricId
+            List<Transaction> transactionListbyFabricId = new List<Transaction>();
+
+            // 2. Select all transactions with given FabricId
+            transactionListbyFabricId = (from t in _context.Transactions
+                                         where t.FabricId == fabricId
+                                         select t).ToList();
+
+            // 3. Sum up InchesQty field in List
+            ViewBag.TotalInches = transactionListbyFabricId.Sum(t => t.InchesQty);
             return View();
         }
-
+        public JsonResult GetQuantityOnHand(int fabricId)
+        {
+            // Get data from database
+            Fabric fabric = _context.Fabrics
+                    .Where(f => f.FabricID == fabricId)
+                    .FirstOrDefault();
+            var totalQty = fabric.TotalInches;
+            return Json(totalQty);
+        }
+        
         // POST: Transactions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -60,11 +82,54 @@ namespace MyFabricTrackerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                var fabricToUpdate = await _context.Fabrics
+                    .Where(f => f.FabricID == transaction.FabricId)
+                    .FirstOrDefaultAsync();
+                long? totalInches = 0;
+
+                if (fabricToUpdate.TotalInches == null)
+                {
+                    totalInches = transaction.InchesQty;
+                }
+                else
+                {
+                    totalInches = fabricToUpdate.TotalInches + transaction.InchesQty;
+                }
+                fabricToUpdate.TotalInches = totalInches;
+                fabricToUpdate.DateModified = transaction.TransactionDate;
+                if (await TryUpdateModelAsync<Fabric>(fabricToUpdate,
+                    "",
+                    f => f.TotalInches, f => f.DateModified))
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateException /*ex*/)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                }
                 _context.Add(transaction);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", transaction.FabricId);
+
+            // 1. Create a new list to store all transaction with given FabricId
+            List<Transaction> transactionListbyFabricId = new List<Transaction>();
+
+            // 2. Select all transactions with given FabricId
+            transactionListbyFabricId = (from t in _context.Transactions
+                                         where t.FabricId == transaction.FabricId
+                                         select t).ToList();
+
+            // 3. Sum up InchesQty field in List
+            ViewBag.TotalInches = transactionListbyFabricId.Sum(t => t.InchesQty);
+
+
             return View(transaction);
         }
 
@@ -120,7 +185,12 @@ namespace MyFabricTrackerWebApp.Controllers
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", transaction.FabricId);
             return View(transaction);
         }
-
+        public IEnumerable<Transaction> GetFabricAdjustments(int fabricId)
+        {
+            return _context.Transactions
+                .Where(f => f.FabricId == fabricId)
+                .ToList();
+        }
         // GET: Transactions/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {

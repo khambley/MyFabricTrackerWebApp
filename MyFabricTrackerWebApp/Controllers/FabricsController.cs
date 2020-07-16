@@ -27,8 +27,12 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: Fabrics
         public async Task<IActionResult> Index()
         {
-            var fabricTrackerDbContext = _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory);
-            return View(await fabricTrackerDbContext.ToListAsync());
+            List<Fabric> fabricList = new List<Fabric>();
+            fabricList = await _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory).ToListAsync();
+            
+            //var fabricTrackerDbContext = _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory);
+            
+            return View(fabricList);
         }
 
         // GET: Fabrics/Details/5
