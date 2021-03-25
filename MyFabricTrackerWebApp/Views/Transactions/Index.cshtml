@@ -16,13 +16,13 @@
                 Item #
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InchesQty)
+                Yardage Qty<br />Adjustment
             </th>
             <th>
                 Total Inches
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FatQtrQty)
+               Fat Qtr Qty<br />Adjustment
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Reason)
@@ -43,7 +43,7 @@
                 @Html.DisplayFor(modelItem => item.Fabric.FabricItemCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.InchesQty)
+                @Html.DisplayFor(modelItem => item.InchesQty) in
             </td>
             <td>
                 @item.Fabric.TotalInches

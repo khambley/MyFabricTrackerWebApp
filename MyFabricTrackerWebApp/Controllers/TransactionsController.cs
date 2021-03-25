@@ -21,8 +21,12 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: Transactions
         public async Task<IActionResult> Index()
         {
-            var fabricTrackerDbContext = _context.Transactions.Include(t => t.Fabric);
+            var fabricTrackerDbContext = _context.Transactions
+                .Include(t => t.Fabric)
+                .OrderByDescending(t => t.TransactionDate);
+            //
             return View(await fabricTrackerDbContext.ToListAsync());
+
         }
 
         // GET: Transactions/Details/5
@@ -102,6 +106,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 var fabricToUpdate = await _context.Fabrics
                     .Where(f => f.FabricID == transaction.FabricId)
                     .FirstOrDefaultAsync();
+                
                 long? totalInches = 0;
 
                 if (fabricToUpdate.TotalInches == null)

@@ -28,6 +28,9 @@ namespace MyFabricTrackerWebApp.Models
 		[Display(Name = "Total Inches")]
 		public long? TotalInches { get; set; }
 
+		[Display(Name = "Total Fat Qtrs")]
+		public long? FatQtrQty { get; set; }
+
 		[Display(Name = "Type")]
 		public string FabricType { get; set; }
 
