@@ -22,38 +22,59 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        <form asp-action="ShowImage">
+            <div class="form-group">
+                @if (ViewBag.SelectedFabricImage != null)
+                {
+                    <img style="width: 100px;" src="~/images/@ViewBag.SelectedFabricImage" />
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="FabricId" class="control-label">Fabric</label>
+                <select asp-for="FabricId" class="form-control" asp-items="ViewBag.FabricList">
+                    <option value="">Select a fabric...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Show Image" class="btn btn-primary" />
+            </div>
+
+        </form>
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
             <div class="form-group">
-                <label asp-for="FabricId" class="control-label"></label>
-                <select asp-for="FabricId" class ="form-control" asp-items="ViewBag.FabricId"></select>
+                <label asp-for="FabricId" class="control-label">Fabric</label>
+                <select asp-for="FabricId" class ="form-control" asp-items="ViewBag.FabricId">
+                    <option value="">Select a fabric...</option>
+                </select>
             </div>
-            <div id="QuantityOnHand"></div>
+            
             <div class="form-group">
-                <label asp-for="InchesQty" class="control-label"></label>
+                <label asp-for="InchesQty" class="control-label">(+ / -) Inches</label>
                 <input asp-for="InchesQty" class="form-control" />
                 <span asp-validation-for="InchesQty" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FatQtrQty" class="control-label"></label>
+                <label asp-for="FatQtrQty" class="control-label">(+ / -) Fat Quarter</label>
                 <input asp-for="FatQtrQty" class="form-control" />
                 <span asp-validation-for="FatQtrQty" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
+                <label asp-for="Reason" class="control-label">Reason</label>
                 <input asp-for="Reason" class="form-control" />
                 <span asp-validation-for="Reason" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TransactionDate" class="control-label"></label>
+                <label asp-for="TransactionDate" class="control-label">Transaction Date</label>
                 <input asp-for="TransactionDate" class="form-control" />
                 <span asp-validation-for="TransactionDate" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            @*<div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
                 </label>
-            </div>
+            </div>*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

@@ -49,10 +49,13 @@ namespace MyFabricTrackerWebApp.Controllers
         public IActionResult Create()
         {
             long fabricId = 0;
+
+            ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
             
-            // 1. Create a new list to store all transaction with given FabricId
-            List<Transaction> transactionListbyFabricId = new List<Transaction>();
+            // 1. Create a new list to store all transactions with given FabricId
+            List <Transaction> transactionListbyFabricId = new List<Transaction>();
 
             // 2. Select all transactions with given FabricId
             transactionListbyFabricId = (from t in _context.Transactions
@@ -73,6 +76,20 @@ namespace MyFabricTrackerWebApp.Controllers
             return Json(totalQty);
         }
         
+        [HttpPost]
+        public IActionResult ShowImage(long fabricId)
+		{
+
+            Fabric fabric = _context.Fabrics
+                    .Where(f => f.FabricID == fabricId)
+                    .FirstOrDefault();
+            ViewBag.SelectedFabricImage = fabric.ImageFileName;
+            ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+            return View("Create");
+
+
+        }
         // POST: Transactions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
