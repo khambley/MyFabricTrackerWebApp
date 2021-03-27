@@ -21,7 +21,8 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: SubCategories
         public async Task<IActionResult> Index()
         {
-            var fabricTrackerDbContext = _context.SubCategories.Include(s => s.MainCategory);
+            //var fabricTrackerDbContext = _context.SubCategories.Include(s => s.MainCategory);
+            var fabricTrackerDbContext = _context.MainCategories.Include(s => s.SubCategories);
             return View(await fabricTrackerDbContext.ToListAsync());
         }
 
@@ -64,7 +65,7 @@ namespace MyFabricTrackerWebApp.Controllers
             {
                 _context.Add(subCategory);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Create), "Fabrics");
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
             return View(subCategory);

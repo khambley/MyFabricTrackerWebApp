@@ -232,8 +232,11 @@ namespace MyFabricTrackerWebApp.Controllers
             var lastFabricinDB = _context.Fabrics
                 .OrderByDescending(f => f.FabricID)
                 .FirstOrDefault();
-            var newFabricId = lastFabricinDB.FabricID + 1;
+           
+            var newFabricId = lastFabricinDB != null ? lastFabricinDB.FabricID + 1 : 1;
+
             string leadingZeroes = "";
+
             if (newFabricId > 0 && newFabricId < 10)
             {
                 leadingZeroes = "0000";

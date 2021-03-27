@@ -61,7 +61,7 @@ namespace MyFabricTrackerWebApp.Controllers
             {
                 _context.Add(mainCategory);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Create), "Fabrics");
             }
             return View(mainCategory);
         }

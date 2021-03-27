@@ -23,10 +23,10 @@
                 Name
             </th>
             <th>
-                MainCategory
+                Main<br />Category
             </th>
             <th>
-                SubCategory
+                Sub<br />Category
             </th>
             <th>
                 Type
@@ -38,16 +38,13 @@
                 Source
             </th>
             <th>
-                Total Yds
+                Total<br />Yds
             </th>
             <th>
-               Date Added
+               Date<br />Added
             </th>
             <th>
-               Date Modified
-            </th>
-            <th>
-                Is Deleted? 
+               Date<br />Modified
             </th>
             <th></th>
         </tr>
@@ -88,9 +85,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateModified)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDeleted)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.FabricID">Edit</a> |
