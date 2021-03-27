@@ -32,10 +32,7 @@
                 Type
             </th>
             <th>
-                Notes
-            </th>
-            <th>
-                Source
+                Width
             </th>
             <th>
                 Total<br />Yds
@@ -53,7 +50,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <img style="width: 50px;" src="~/images/@item.ImageFileName" />
+                @await Html.PartialAsync("_DisplayImageThumbnail", item.ImageFileName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FabricItemCode)
@@ -72,13 +69,10 @@
                 @Html.DisplayFor(modelItem => item.FabricType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FabricNotes)
+                @Html.DisplayFor(modelItem => item.FabricWidth)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FabricSourceName)
-            </td>
-            <td>
-                @string.Format("{0:n2}", item.TotalInches / 36.00) yds
+                @string.Format("{0:n2}", item.TotalInches / 36.00)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateAdded)
