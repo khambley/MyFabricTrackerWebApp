@@ -16,9 +16,13 @@ namespace MyFabricTrackerWebApp.Models
 		public string FabricItemCode { get; set; }
 		[Display(Name = "Name")]
 		public string FabricName { get; set; }
-		
+
+		[NotMapped]
+		public string FabricDisplayName => "#" + FabricItemCode + " " + FabricName;
+
 		[NotMapped]
 		public IFormFile ImageFile { get; set; }
+
 		public string ImageFileName { get; set; }
 
 		public long MainCategoryId { get; set; }

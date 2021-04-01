@@ -76,10 +76,10 @@ namespace MyFabricTrackerWebApp.Controllers
             ViewBag.MainCategoryList = mainCategoryList;
 
             // Create source dropdown and add sources to it.
-            List<Source> sourcesList = _context.Sources
-                .OrderBy(s => s.SourceName).ToList();
-            sourcesList.Insert(0, new Source { SourceId = 0, SourceName = "Select" });
-            ViewBag.SourceId = sourcesList;
+            long sourceId = 0;
+           
+            ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", sourceId);
+            
 
             return View();
         }
@@ -136,6 +136,7 @@ namespace MyFabricTrackerWebApp.Controllers
             }
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
+            ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
             return View(fabric);
         }
 
@@ -152,8 +153,11 @@ namespace MyFabricTrackerWebApp.Controllers
             {
                 return NotFound();
             }
+
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
+            ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
+
             return View(fabric);
         }
 
@@ -190,8 +194,10 @@ namespace MyFabricTrackerWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
+            ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
             return View(fabric);
         }
 
@@ -206,6 +212,7 @@ namespace MyFabricTrackerWebApp.Controllers
             var fabric = await _context.Fabrics
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
+                .Include(f => f.Source)
                 .FirstOrDefaultAsync(m => m.FabricID == id);
             if (fabric == null)
             {

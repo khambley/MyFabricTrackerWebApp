@@ -54,9 +54,9 @@ namespace MyFabricTrackerWebApp.Controllers
         {
             long fabricId = 0;
 
-            ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+            ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
 
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
             
             // 1. Create a new list to store all transactions with given FabricId
             List <Transaction> transactionListbyFabricId = new List<Transaction>();
@@ -88,8 +88,8 @@ namespace MyFabricTrackerWebApp.Controllers
                     .Where(f => f.FabricID == fabricId)
                     .FirstOrDefault();
             ViewBag.SelectedFabricImage = fabric.ImageFileName;
-            ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", fabricId);
+            ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
             return View("Create");
 
 
@@ -168,7 +168,7 @@ namespace MyFabricTrackerWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", transaction.FabricId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", transaction.FabricId);
             return View(transaction);
         }
 
@@ -204,7 +204,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", transaction.FabricId);
+            ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", transaction.FabricId);
             return View(transaction);
         }
         public IEnumerable<Transaction> GetFabricAdjustments(int fabricId)

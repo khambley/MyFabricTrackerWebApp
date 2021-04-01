@@ -19,9 +19,6 @@
             <th>
                 Sub Category
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDeleted)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -40,9 +37,6 @@
                             @Html.DisplayFor(modelItem => subcat.SubCategoryName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.IsDeleted)
-                        </td>
-                        <td>
                             <a asp-action="Edit" asp-route-id="@subcat.SubCategoryId">Edit</a> |
                             <a asp-action="Details" asp-route-id="@subcat.SubCategoryId">Details</a> |
                             <a asp-action="Delete" asp-route-id="@subcat.SubCategoryId">Delete</a>
@@ -58,9 +52,6 @@
                     </td>
                     <td>
                         No SubCategories yet!
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IsDeleted)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-controller="MainCategories" asp-route-id="@item.MainCategoryId">Edit</a> |
