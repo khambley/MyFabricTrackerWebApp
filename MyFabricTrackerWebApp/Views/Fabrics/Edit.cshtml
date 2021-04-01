@@ -48,15 +48,12 @@
                 <input asp-for="FabricNotes" class="form-control" />
                 <span asp-validation-for="FabricNotes" class="text-danger"></span>
             </div>
+      
             <div class="form-group">
-                <label asp-for="FabricSourceName" class="control-label"></label>
-                <input asp-for="FabricSourceName" class="form-control" />
-                <span asp-validation-for="FabricSourceName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FabricSourceUrl" class="control-label"></label>
-                <input asp-for="FabricSourceUrl" class="form-control" />
-                <span asp-validation-for="FabricSourceUrl" class="text-danger"></span>
+                <label asp-for="SourceId" class="control-label">Source</label>
+                <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
+                    <option value="">Select a fabric...</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="DateAdded" class="control-label"></label>

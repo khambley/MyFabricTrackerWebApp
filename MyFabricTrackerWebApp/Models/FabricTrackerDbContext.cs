@@ -13,6 +13,7 @@ namespace MyFabricTrackerWebApp.Models
 
 		public DbSet<Fabric> Fabrics { get; set; }
 		public DbSet<MainCategory> MainCategories { get; set; }
+		public DbSet<Source> Sources { get; set; }
 		public DbSet<SubCategory> SubCategories { get; set; }
 		public DbSet<Transaction> Transactions { get; set; }
 	}

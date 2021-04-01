@@ -28,7 +28,11 @@ namespace MyFabricTrackerWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             List<Fabric> fabricList = new List<Fabric>();
-            fabricList = await _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory).ToListAsync();
+            fabricList = await _context.Fabrics
+                .Include(f => f.MainCategory)
+                .Include(f => f.SubCategory)
+                .Include(f => f.Source)
+                .ToListAsync();
             
             //var fabricTrackerDbContext = _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory);
             
@@ -46,6 +50,7 @@ namespace MyFabricTrackerWebApp.Controllers
             var fabric = await _context.Fabrics
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
+                .Include(f => f.Source)
                 .FirstOrDefaultAsync(m => m.FabricID == id);
             if (fabric == null)
             {
@@ -69,6 +74,13 @@ namespace MyFabricTrackerWebApp.Controllers
 
             // ------ Assigning mainCategoryList to ViewBag.MainCategoryList ------
             ViewBag.MainCategoryList = mainCategoryList;
+
+            // Create source dropdown and add sources to it.
+            List<Source> sourcesList = _context.Sources
+                .OrderBy(s => s.SourceName).ToList();
+            sourcesList.Insert(0, new Source { SourceId = 0, SourceName = "Select" });
+            ViewBag.SourceId = sourcesList;
+
             return View();
         }
         public JsonResult GetSubCategoryList(int MainCategoryId)
@@ -91,7 +103,7 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,FabricSourceName,AccentColor3,FabricSourceUrl,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,SourceId,AccentColor3,FabricSourceUrl,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
         {
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();

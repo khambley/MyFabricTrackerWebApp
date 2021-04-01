@@ -52,11 +52,13 @@ namespace MyFabricTrackerWebApp.Models
 		[Display(Name = "Notes")]
 		public string FabricNotes { get; set; }
 
-		[Display(Name = "Source Name")]
-		public string FabricSourceName { get; set; }
+		//[Display(Name = "Source Name")]
+		//public string FabricSourceName { get; set; }
 
-		[Display(Name = "Source Url")]
-		public string FabricSourceUrl { get; set; }
+		//[Display(Name = "Source Url")]
+		//public string FabricSourceUrl { get; set; }
+		public int? SourceId { get; set; }
+		public Source Source { get; set; }
 
 		[Display(Name = "Date Added")]
 		public DateTime DateAdded { get; set; }
