@@ -21,6 +21,8 @@ namespace MyFabricTrackerWebApp.Models
 		[Phone]
 		public string? PhoneNumber { get; set; }
 
+		public string? Notes { get; set; }
+
 		[Display(Name = "Date Added")]
 		public DateTime DateAdded { get; set; }
 
