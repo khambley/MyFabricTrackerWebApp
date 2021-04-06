@@ -19,6 +19,8 @@ namespace MyFabricTrackerWebApp.Models
 
 		[NotMapped]
 		public string FabricDisplayName => "#" + FabricItemCode + " " + FabricName;
+		public string? Brand { get; set; }
+		public string? Designer { get; set; }
 
 		[NotMapped]
 		public IFormFile ImageFile { get; set; }
@@ -36,7 +38,8 @@ namespace MyFabricTrackerWebApp.Models
 		public long? FatQtrQty { get; set; }
 
 		[Display(Name = "Type")]
-		public string FabricType { get; set; }
+		public int? FabricTypeId { get; set; }
+		public FabricType FabricType { get; set; }
 
 		[Display(Name = "Width")]
 		public string FabricWidth { get; set; }
@@ -56,11 +59,6 @@ namespace MyFabricTrackerWebApp.Models
 		[Display(Name = "Notes")]
 		public string FabricNotes { get; set; }
 
-		//[Display(Name = "Source Name")]
-		//public string FabricSourceName { get; set; }
-
-		//[Display(Name = "Source Url")]
-		//public string FabricSourceUrl { get; set; }
 		public int? SourceId { get; set; }
 		public Source Source { get; set; }
 
@@ -77,14 +75,6 @@ namespace MyFabricTrackerWebApp.Models
 		public bool IsDeleted { get; set; }
 		public bool IsPopular { get; set; }
 
-
-
-
-
-
-
-
-
-
 	}
+	
 }

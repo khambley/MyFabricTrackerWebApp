@@ -32,6 +32,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
+                .Include(f => f.FabricType)
                 .ToListAsync();
             
             //var fabricTrackerDbContext = _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory);
@@ -51,6 +52,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
+                .Include(f => f.FabricType)
                 .FirstOrDefaultAsync(m => m.FabricID == id);
             if (fabric == null)
             {
@@ -65,22 +67,20 @@ namespace MyFabricTrackerWebApp.Controllers
         {
             List<MainCategory> mainCategoryList = new List<MainCategory>();
 
-            // ------ Getting Data from Database Using EF Core ------
+            // -- Create main categories dropdown
             mainCategoryList = _context.MainCategories
                         .OrderBy(mc => mc.MainCategoryName).ToList();
-
-            // ------ Inserting Default value "Select" in List ------
             mainCategoryList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "Select" });
-
-            // ------ Assigning mainCategoryList to ViewBag.MainCategoryList ------
             ViewBag.MainCategoryList = mainCategoryList;
 
-            // Create source dropdown and add sources to it.
+            // -- Create fabric types dropdown
+            long fabricTypeId = 0;
+            ViewData["FabricTypeId"] = new SelectList(_context.FabricTypes.OrderByDescending(ft => ft.Name), "Id", "Name", fabricTypeId);
+
+            // Create sources dropdown and add sources to it.
             long sourceId = 0;
-           
             ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", sourceId);
             
-
             return View();
         }
         public JsonResult GetSubCategoryList(int MainCategoryId)
@@ -103,7 +103,7 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,SourceId,AccentColor3,FabricSourceUrl,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,SourceId,FabricTypeId,AccentColor3,FabricSourceUrl,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
         {
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();
@@ -137,6 +137,7 @@ namespace MyFabricTrackerWebApp.Controllers
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
             ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
+            ViewData["FabricTypeId"] = new SelectList(_context.FabricTypes.OrderByDescending(ft => ft.Name), "FabricTypeId", "Name", fabric.FabricTypeId);
             return View(fabric);
         }
 

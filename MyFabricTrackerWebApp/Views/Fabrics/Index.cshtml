@@ -9,7 +9,32 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<div class="row">
+@foreach (var item in Model)
+{
+    <div class="col-md-2">
+
+        <div class="card" style="width: 10rem;">
+            @await Html.PartialAsync("_DisplayImageThumbnail", item.ImageFileName)
+            <ul class="list-group list-group-flush text-small">
+                <li class="list-group-item">#@Html.DisplayFor(modelItem => item.FabricItemCode)</li>
+                <li class="list-group-item">@Html.DisplayFor(modelItem => item.MainCategory.MainCategoryName) > @Html.DisplayFor(modelItem => item.SubCategory.SubCategoryName)</li>
+                <li class="list-group-item"><b>@Html.DisplayFor(modelItem => item.FabricName)</b></li>
+                <li class="list-group-item">Total Yds: @string.Format("{0:n2}", item.TotalInches / 36.00)</li>
+
+            </ul>
+            <div class="card-body">
+                <a asp-action="Edit" asp-route-id="@item.FabricID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.FabricID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.FabricID">Delete</a>
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -88,4 +113,4 @@
         </tr>
 }
     </tbody>
-</table>
+</table>*@

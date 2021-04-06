@@ -90,7 +90,16 @@
                 <input asp-for="FabricName" class="form-control" />
                 <span asp-validation-for="FabricName" class="text-danger"></span>
             </div>
-
+            <div class="form-group">
+                <label class="control-label">Brand</label>
+                <input asp-for="Brand" class="form-control" />
+                <span asp-validation-for="Brand" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Designer</label>
+                <input asp-for="Designer" class="form-control" />
+                <span asp-validation-for="Designer" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label class="control-label">Width</label>
                 <input asp-for="FabricWidth" class="form-control" />
@@ -99,22 +108,27 @@
 
             <div class="form-group">
                 <label class="control-label">Type</label>
-                <input asp-for="FabricType" class="form-control" />
+                @*<input asp-for="FabricType" class="form-control" />*@
+                <select asp-for="FabricTypeId" class="form-control" asp-items="ViewBag.FabricTypeId">
+                    <option value="">Select a type...</option>
+                </select>
                 <span asp-validation-for="FabricType" class="text-danger"></span>
+                <a class="btn btn-primary" asp-action="Create" asp-controller="FabricTypes">Create New Fabric Type</a>
             </div>
+
             <div class="form-group">
                 <label class="control-label">Notes</label>
                 <input asp-for="FabricNotes" class="form-control" />
                 <span asp-validation-for="FabricNotes" class="text-danger"></span>
             </div>
-            
+
             <div class="form-group">
                 <label asp-for="SourceId" class="control-label">Source</label>
                 <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
                     <option value="">Select a source...</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

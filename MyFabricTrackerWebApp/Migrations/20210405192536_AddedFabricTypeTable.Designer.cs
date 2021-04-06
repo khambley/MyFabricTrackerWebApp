@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFabricTrackerWebApp.Models;
 
 namespace MyFabricTrackerWebApp.Migrations
 {
     [DbContext(typeof(FabricTrackerDbContext))]
-    partial class FabricTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210405192536_AddedFabricTypeTable")]
+    partial class AddedFabricTypeTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,17 +40,11 @@ namespace MyFabricTrackerWebApp.Migrations
                     b.Property<string>("BackgroundColor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Brand")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Designer")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FabricItemCode")
                         .HasColumnType("nvarchar(max)");
