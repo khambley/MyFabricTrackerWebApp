@@ -57,6 +57,7 @@ namespace MyFabricTrackerWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                source.DateAdded = DateTime.Now;
                 _context.Add(source);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

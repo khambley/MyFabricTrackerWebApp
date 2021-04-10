@@ -21,6 +21,7 @@
                 <li class="list-group-item">@Html.DisplayFor(modelItem => item.MainCategory.MainCategoryName) > @Html.DisplayFor(modelItem => item.SubCategory.SubCategoryName)</li>
                 <li class="list-group-item"><b>@Html.DisplayFor(modelItem => item.FabricName)</b></li>
                 <li class="list-group-item">Total Yds: @string.Format("{0:n2}", item.TotalInches / 36.00)</li>
+                <li class="list-group-item">Total Fat Qtrs: @Html.DisplayFor(modelItem => item.FatQtrQty)</li>
 
             </ul>
             <div class="card-body">

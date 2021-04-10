@@ -58,16 +58,6 @@ namespace MyFabricTrackerWebApp.Controllers
 
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
             
-            // 1. Create a new list to store all transactions with given FabricId
-            List <Transaction> transactionListbyFabricId = new List<Transaction>();
-
-            // 2. Select all transactions with given FabricId
-            transactionListbyFabricId = (from t in _context.Transactions
-                                         where t.FabricId == fabricId
-                                         select t).ToList();
-
-            // 3. Sum up InchesQty field in List
-            ViewBag.TotalInches = transactionListbyFabricId.Sum(t => t.InchesQty);
             return View();
         }
         public JsonResult GetQuantityOnHand(int fabricId)
@@ -87,12 +77,18 @@ namespace MyFabricTrackerWebApp.Controllers
             Fabric fabric = _context.Fabrics
                     .Where(f => f.FabricID == fabricId)
                     .FirstOrDefault();
+
+            // Show current quantity on hand, yards and fat quarters
+            List<Transaction> transactionListbyFabricId = (from t in _context.Transactions
+                                         where t.FabricId == fabricId
+                                         select t).ToList();
+            ViewBag.TotalInches = transactionListbyFabricId.Sum(t => t.InchesQty);
+            ViewBag.TotalFatQtrs = transactionListbyFabricId.Sum(t => t.FatQtrQty);
+
             ViewBag.SelectedFabricImage = fabric.ImageFileName;
             ViewData["FabricList"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricDisplayName", fabricId);
             return View("Create");
-
-
         }
         // POST: Transactions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -108,20 +104,22 @@ namespace MyFabricTrackerWebApp.Controllers
                     .FirstOrDefaultAsync();
                 
                 long? totalInches = 0;
-
-                if (fabricToUpdate.TotalInches == null)
+                long? totalFatQtrs = 0;
+                if (fabricToUpdate.TotalInches == null || fabricToUpdate.FatQtrQty == null)
                 {
                     totalInches = transaction.InchesQty;
+                    totalFatQtrs = transaction.FatQtrQty;
                 }
                 else
                 {
                     totalInches = fabricToUpdate.TotalInches + transaction.InchesQty;
+                    totalFatQtrs = fabricToUpdate.FatQtrQty + transaction.FatQtrQty;
                 }
                 fabricToUpdate.TotalInches = totalInches;
+                fabricToUpdate.FatQtrQty = totalFatQtrs;
                 fabricToUpdate.DateModified = transaction.TransactionDate;
-                if (await TryUpdateModelAsync<Fabric>(fabricToUpdate,
-                    "",
-                    f => f.TotalInches, f => f.DateModified))
+
+                if (await TryUpdateModelAsync<Fabric>(fabricToUpdate, "", f => f.TotalInches, f => f.DateModified, f => f.FatQtrQty))
                 {
                     try
                     {
@@ -134,10 +132,14 @@ namespace MyFabricTrackerWebApp.Controllers
                             "see your system administrator.");
                     }
                 }
+
                 _context.Add(transaction);
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", transaction.FabricId);
 
             // 1. Create a new list to store all transaction with given FabricId
@@ -150,7 +152,6 @@ namespace MyFabricTrackerWebApp.Controllers
 
             // 3. Sum up InchesQty field in List
             ViewBag.TotalInches = transactionListbyFabricId.Sum(t => t.InchesQty);
-
 
             return View(transaction);
         }

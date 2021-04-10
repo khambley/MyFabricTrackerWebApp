@@ -18,6 +18,7 @@
 </script>*@
 <h4>Create Transaction</h4>
 <p>Total Yds on Hand: @ViewBag.TotalInches</p>
+<p>Total Fat Qtrs on Hand: @ViewBag.TotalFatQtrs</p>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -56,7 +57,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="FatQtrQty" class="control-label">(+ / -) Fat Quarter</label>
-                <input asp-for="FatQtrQty" class="form-control" />
+                <input type="number" asp-for="FatQtrQty" class="form-control" />
                 <span asp-validation-for="FatQtrQty" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -18,7 +18,5 @@ namespace MyFabricTrackerWebApp.Models
 		public DateTime TransactionDate { get; set; }
 		public bool IsDeleted { get; set; }
 
-
-
 	}
 }
