@@ -22,7 +22,8 @@ namespace MyFabricTrackerWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             //var fabricTrackerDbContext = _context.SubCategories.Include(s => s.MainCategory);
-            var fabricTrackerDbContext = _context.MainCategories.Include(s => s.SubCategories);
+            var fabricTrackerDbContext = _context.MainCategories
+                .Include(s => s.SubCategories);
             return View(await fabricTrackerDbContext.ToListAsync());
         }
 
@@ -49,7 +50,7 @@ namespace MyFabricTrackerWebApp.Controllers
         public IActionResult Create()
         {
             
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName");
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories.OrderBy(m => m.MainCategoryName), "MainCategoryId", "MainCategoryName");
             
             return View();
         }
@@ -67,7 +68,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Create), "Fabrics");
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories.OrderBy(m => m.MainCategoryName), "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
             return View(subCategory);
         }
 
@@ -84,7 +85,7 @@ namespace MyFabricTrackerWebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories.OrderBy(m => m.MainCategoryName), "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
             return View(subCategory);
         }
 
@@ -120,7 +121,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories.OrderBy(m => m.MainCategoryName), "MainCategoryId", "MainCategoryName", subCategory.MainCategoryId);
             return View(subCategory);
         }
 

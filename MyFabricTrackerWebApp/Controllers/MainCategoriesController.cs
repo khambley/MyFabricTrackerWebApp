@@ -21,7 +21,8 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: MainCategories
         public async Task<IActionResult> Index()
         {
-            var orderedList = _context.MainCategories.Include(c => c.SubCategories)
+            var orderedList = _context.MainCategories
+                .Include(c => c.SubCategories)
                 .OrderBy(n => n.MainCategoryName).ToListAsync();
             return View(await orderedList);
         }

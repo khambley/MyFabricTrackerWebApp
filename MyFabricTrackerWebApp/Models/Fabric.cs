@@ -61,6 +61,10 @@ namespace MyFabricTrackerWebApp.Models
 
 		public int? SourceId { get; set; }
 		public Source Source { get; set; }
+		[Display(Name = "Date Released")]
+		[DataType(DataType.Date)]
+		[Column(TypeName = "date")]
+		public DateTime? DateReleased { get; set; }
 
 		[Display(Name = "Date Added")]
 		public DateTime DateAdded { get; set; }

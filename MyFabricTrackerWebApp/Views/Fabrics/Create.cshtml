@@ -10,6 +10,24 @@
     <div class="col-md-5">
         <form asp-action="Create" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <partial name="_ChooseCategory.cshtml" />
+
+            <div class="form-group">
+                <label class="control-label">Type</label>
+                <select asp-for="FabricTypeId" class="form-control" asp-items="ViewBag.FabricTypeId">
+                    <option value="">Select a type...</option>
+                </select>
+                <span asp-validation-for="FabricType" class="text-danger"></span>
+                <a class="btn btn-primary" asp-action="Create" asp-controller="FabricTypes">Create New Fabric Type</a>
+            </div>
+            <div class="form-group">
+                <label asp-for="SourceId" class="control-label">Source</label>
+                <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
+                    <option value="">Select a source...</option>
+                </select>
+                <a class="btn btn-primary" asp-action="Create" asp-controller="Sources">Create New Source</a>
+            </div>
             <div class="row">
                 <div class="col-md-3">
                     <div class="form-group form-check">
@@ -50,7 +68,6 @@
                         }
                     }
                 </script>
-                @*<span asp-validation-for="ImageFileName" class="text-danger"></span>*@
             </div>
             <div class="row">
                 <div class="col-md-3">
@@ -82,9 +99,6 @@
                     </div>
                 </div>
             </div>
-
-            <partial name="_ChooseCategory.cshtml" />
-
             <div class="form-group">
                 <label class="control-label">Name</label>
                 <input asp-for="FabricName" class="form-control" />
@@ -101,33 +115,22 @@
                 <span asp-validation-for="Designer" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="DateReleased" class="control-label"></label>
+                <input asp-for="DateReleased" class="form-control" />
+                <span asp-validation-for="DateReleased" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Width</label>
                 <input asp-for="FabricWidth" class="form-control" />
                 <span asp-validation-for="FabricWidth" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label class="control-label">Type</label>
-                @*<input asp-for="FabricType" class="form-control" />*@
-                <select asp-for="FabricTypeId" class="form-control" asp-items="ViewBag.FabricTypeId">
-                    <option value="">Select a type...</option>
-                </select>
-                <span asp-validation-for="FabricType" class="text-danger"></span>
-                <a class="btn btn-primary" asp-action="Create" asp-controller="FabricTypes">Create New Fabric Type</a>
-            </div>
-
             <div class="form-group">
                 <label class="control-label">Notes</label>
-                <input asp-for="FabricNotes" class="form-control" />
+                <textarea asp-for="FabricNotes" class="form-control"></textarea>
                 <span asp-validation-for="FabricNotes" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="SourceId" class="control-label">Source</label>
-                <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
-                    <option value="">Select a source...</option>
-                </select>
-            </div>
+
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

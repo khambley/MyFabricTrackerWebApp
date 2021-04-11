@@ -16,7 +16,6 @@ namespace MyFabricTrackerWebApp.Controllers
     {
         private readonly FabricTrackerDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        //This is a comment to test github account.
 
         public FabricsController(FabricTrackerDbContext context, IWebHostEnvironment webHostEnvironment)
         {
@@ -35,8 +34,6 @@ namespace MyFabricTrackerWebApp.Controllers
                 .Include(f => f.FabricType)
                 .ToListAsync();
             
-            //var fabricTrackerDbContext = _context.Fabrics.Include(f => f.MainCategory).Include(f => f.SubCategory);
-            
             return View(fabricList);
         }
 
@@ -54,6 +51,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 .Include(f => f.Source)
                 .Include(f => f.FabricType)
                 .FirstOrDefaultAsync(m => m.FabricID == id);
+
             if (fabric == null)
             {
                 return NotFound();
@@ -103,7 +101,7 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,SourceId,FabricTypeId,AccentColor3,FabricSourceUrl,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,SourceId,FabricTypeId,AccentColor3,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular")] Fabric fabric, IFormFile imageFile)
         {
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();
@@ -134,6 +132,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
             ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
@@ -167,7 +166,7 @@ namespace MyFabricTrackerWebApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateAdded,DateModified,IsDeleted")] Fabric fabric)
+        public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDeleted")] Fabric fabric)
         {
             fabric.DateAdded = DateTime.Now;
             if (id != fabric.FabricID)
@@ -214,7 +213,9 @@ namespace MyFabricTrackerWebApp.Controllers
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
+                .Include(f => f.FabricType)
                 .FirstOrDefaultAsync(m => m.FabricID == id);
+
             if (fabric == null)
             {
                 return NotFound();
