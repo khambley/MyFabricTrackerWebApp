@@ -40,6 +40,7 @@ body {
 }
 .card {
     min-height: 310px;
+    margin-bottom: 10px;
 }
 .card-body {
     padding: .2rem .7rem;
