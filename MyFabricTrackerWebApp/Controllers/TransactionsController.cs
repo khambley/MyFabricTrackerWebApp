@@ -105,16 +105,25 @@ namespace MyFabricTrackerWebApp.Controllers
                 
                 long? totalInches = 0;
                 long? totalFatQtrs = 0;
-                if (fabricToUpdate.TotalInches == null || fabricToUpdate.FatQtrQty == null)
+
+                if (fabricToUpdate.TotalInches == null)
                 {
                     totalInches = transaction.InchesQty;
-                    totalFatQtrs = transaction.FatQtrQty;
                 }
                 else
                 {
                     totalInches = fabricToUpdate.TotalInches + transaction.InchesQty;
+                }
+
+                if (fabricToUpdate.FatQtrQty == null)
+				{
+                    totalFatQtrs = transaction.FatQtrQty;
+                }
+                else
+				{
                     totalFatQtrs = fabricToUpdate.FatQtrQty + transaction.FatQtrQty;
                 }
+
                 fabricToUpdate.TotalInches = totalInches;
                 fabricToUpdate.FatQtrQty = totalFatQtrs;
                 fabricToUpdate.DateModified = transaction.TransactionDate;
