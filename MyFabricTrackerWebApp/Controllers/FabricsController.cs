@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MyFabricTrackerWebApp.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace MyFabricTrackerWebApp.Controllers
 {
@@ -70,7 +73,7 @@ namespace MyFabricTrackerWebApp.Controllers
                         .OrderBy(mc => mc.MainCategoryName).ToList();
             mainCategoryList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "Select" });
             ViewBag.MainCategoryList = mainCategoryList;
-
+            
             // -- Create fabric types dropdown
             long fabricTypeId = 0;
             ViewData["FabricTypeId"] = new SelectList(_context.FabricTypes.OrderByDescending(ft => ft.Name), "Id", "Name", fabricTypeId);
@@ -106,23 +109,54 @@ namespace MyFabricTrackerWebApp.Controllers
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();
 
-            if (imageFile != null)
-            {
-                string webRootPath = _webHostEnvironment.WebRootPath;
+			//if (imageFile != null)
+			//{
+			//    string webRootPath = _webHostEnvironment.WebRootPath;
 
-                //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
-                var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
-                
-                //Set the Image File Path.
-                var filePath = Path.Combine(webRootPath + "\\images\\", uniqueFileName);
+			//    //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
+			//    var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
 
-                //Save the Image File to folder on file system.
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(stream);
-                }
-                fabric.ImageFileName = uniqueFileName;
+			//    //Set the Image File Path.
+			//    var filePath = Path.Combine(webRootPath + "\\images\\", uniqueFileName);
+
+			//    //Save the Image File to folder on file system.
+			//    using (var stream = new FileStream(filePath, FileMode.Create))
+			//    {
+			//        await imageFile.CopyToAsync(stream);
+			//    }
+			//    fabric.ImageFileName = uniqueFileName;
+			//}
+			try
+			{
+                if(imageFile != null)
+				{
+                    string webRootPath = _webHostEnvironment.WebRootPath;
+
+                    //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
+                    var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
+
+                    //Set the Image File Path.
+                    //var filePath = Path.Combine(webRootPath + "\\images\\", uniqueFileName);
+
+                    using (var image = Image.Load(imageFile.OpenReadStream()))
+                    {
+                        int width = image.Width / 2;
+                        int height = image.Height / 2;
+
+                        image.Mutate(x => x.Resize(width, height));
+                        var filePath = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")).Root + $@"\{uniqueFileName}";
+
+                        image.Save(filePath);
+                    }
+
+                    fabric.ImageFileName = uniqueFileName;
+                }   
             }
+            catch (Exception ex)
+			{
+                Console.WriteLine(ex.Message);
+                throw;
+			}
 
             fabric.DateAdded = DateTime.Now;
             
