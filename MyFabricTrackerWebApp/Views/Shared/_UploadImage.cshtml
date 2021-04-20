@@ -1,0 +1,18 @@
+﻿@model MyFabricTrackerWebApp.Models.Fabric
+
+<label class="control-label">Upload Image:</label>
+<div class="control-label">
+    <img id="user_img" width="100" />
+</div>
+<input type="file" asp-for="ImageFile" class="form-control no-border no-padding-left" onchange="show(this)" />
+<script type="text/javascript">
+    function show(input) {
+        if (input.files && input.files[0]) {
+            var filereader = new FileReader();
+            filereader.onload = function (e) {
+                $('#user_img').attr('src', e.target.result);
+            }
+            filereader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

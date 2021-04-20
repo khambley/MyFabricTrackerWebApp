@@ -109,23 +109,7 @@ namespace MyFabricTrackerWebApp.Controllers
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();
 
-			//if (imageFile != null)
-			//{
-			//    string webRootPath = _webHostEnvironment.WebRootPath;
-
-			//    //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
-			//    var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
-
-			//    //Set the Image File Path.
-			//    var filePath = Path.Combine(webRootPath + "\\images\\", uniqueFileName);
-
-			//    //Save the Image File to folder on file system.
-			//    using (var stream = new FileStream(filePath, FileMode.Create))
-			//    {
-			//        await imageFile.CopyToAsync(stream);
-			//    }
-			//    fabric.ImageFileName = uniqueFileName;
-			//}
+			
 			try
 			{
                 if(imageFile != null)
@@ -134,9 +118,6 @@ namespace MyFabricTrackerWebApp.Controllers
 
                     //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
                     var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
-
-                    //Set the Image File Path.
-                    //var filePath = Path.Combine(webRootPath + "\\images\\", uniqueFileName);
 
                     using (var image = Image.Load(imageFile.OpenReadStream()))
                     {
