@@ -35,6 +35,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
                 .Include(f => f.FabricType)
+                .OrderByDescending(f => f.DateAdded)
                 .ToListAsync();
             
             return View(fabricList);
