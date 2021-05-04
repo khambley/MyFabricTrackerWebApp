@@ -27,18 +27,35 @@ namespace MyFabricTrackerWebApp.Controllers
         }
 
         // GET: Fabrics
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            List<Fabric> fabricList = new List<Fabric>();
-            fabricList = await _context.Fabrics
+            var fabrics = _context.Fabrics
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
                 .Include(f => f.FabricType)
-                .OrderByDescending(f => f.DateAdded)
-                .ToListAsync();
+                .OrderByDescending(f => f.DateAdded);
             
-            return View(fabricList);
+            switch (sortOrder)
+			{
+                case "name_desc":
+                    fabrics = fabrics.OrderByDescending(f => f.FabricName);
+                    break;
+                case "name_asce":
+                    fabrics = fabrics.OrderBy(f => f.FabricName);
+                    break;
+                case "date_asce":
+                    fabrics = fabrics.OrderBy(f => f.DateAdded);
+                    break;
+                case "date_desc":
+                    fabrics = fabrics.OrderByDescending(f => f.DateAdded);
+                    break;
+                default:
+                    fabrics = fabrics.OrderByDescending(f => f.DateAdded);
+                    break;
+			}
+
+            return View(await fabrics.AsNoTracking().ToListAsync());
         }
 
         // GET: Fabrics/Details/5

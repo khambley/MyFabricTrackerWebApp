@@ -4,11 +4,16 @@
     ViewData["Title"] = "Fabric List";
 }
 
-<h3>Fabric List</h3>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h3>Fabric List <span><a class="btn btn-success" asp-action="Create">Create New</a></span></h3>
+<div class="row">
+    <div class="col-md-12 col-sm-4">
+        Sort by: <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_asce">Date &#8599;</a>
+                 <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_desc">Date &#x2198;</a>
+                 <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_asce">Name A&rarr;Z</a>
+                 <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_desc">Name Z&rarr;A</a>
+    </div>  
+</div>
+<hr />
 <div class="row">
 @foreach (var item in Model)
 {
@@ -22,6 +27,7 @@
                 <li class="list-group-item">@Html.DisplayFor(modelItem => item.FabricName)</li>
                 <li class="list-group-item"><b>Total Yds: @string.Format("{0:n2}", item.TotalInches / 36.00)</b></li>
                 <li class="list-group-item">Total Fat Qtrs: @Html.DisplayFor(modelItem => item.FatQtrQty)</li>
+                <li class="list-group-item">Date Added: @Html.DisplayFor(modelItem => item.DateAdded)</li>
 
             </ul>
             <div class="card-body">
