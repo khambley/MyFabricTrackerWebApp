@@ -6,7 +6,18 @@
 
 <h3>Fabric List <span><a class="btn btn-success" asp-action="Create">Create New</a></span></h3>
 <div class="row">
-    <div class="col-md-12 col-sm-4">
+    <div class="col-md-12 col-sm-12">
+        <form class="form-inline" asp-action="Index" method="get">
+            <label class="control-label">Search by Item Code:&nbsp;&nbsp; </label>
+            <input type="text" name="SearchString" class="form-control mb-2 mr-sm-2" value="@ViewData[" CurrentSearch"]" />
+            <input type="submit" value="Search" class="btn btn-primary mb-2" />&nbsp;
+            <a asp-action="Index" class="btn btn-primary mb-2">Reset</a>
+        </form>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12 col-sm-12">
         Sort by: <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_asce">Date &#8599;</a>
                  <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_desc">Date &#x2198;</a>
                  <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_asce">Name A&rarr;Z</a>

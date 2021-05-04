@@ -27,15 +27,22 @@ namespace MyFabricTrackerWebApp.Controllers
         }
 
         // GET: Fabrics
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
+            ViewData["CurrentSearch"] = searchString;
+
             var fabrics = _context.Fabrics
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
                 .Include(f => f.FabricType)
                 .OrderByDescending(f => f.DateAdded);
-            
+
+			if (!String.IsNullOrEmpty(searchString))
+			{
+                fabrics = (IOrderedQueryable<Fabric>)fabrics
+                    .Where(f => f.FabricItemCode.ToUpper().Contains(searchString.ToUpper()));
+			}
             switch (sortOrder)
 			{
                 case "name_desc":
@@ -127,7 +134,6 @@ namespace MyFabricTrackerWebApp.Controllers
             //Set the auto-generated Item Code 
             fabric.FabricItemCode = CreateUniqueItemCode();
 
-			
 			try
 			{
                 if(imageFile != null)
