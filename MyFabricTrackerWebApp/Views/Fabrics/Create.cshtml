@@ -110,6 +110,16 @@
                 <span asp-validation-for="FabricWidth" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label class="control-label">Initial Qty (inches):</label>
+                <input type="number" asp-for="TotalInches" class="form-control" />
+                <span asp-validation-for="TotalInches" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Fat Qtr Qty (if any):</label>
+                <input type="number" asp-for="FatQtrQty" class="form-control" />
+                <span asp-validation-for="FatQtrQty" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Notes</label>
                 <textarea asp-for="FabricNotes" class="form-control"></textarea>
                 <span asp-validation-for="FabricNotes" class="text-danger"></span>
