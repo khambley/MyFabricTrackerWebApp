@@ -113,6 +113,7 @@ namespace MyFabricTrackerWebApp.Controllers
         // GET: Fabrics/Create
         public IActionResult Create()
         {
+            
             ViewBag.MainCategoryList = CreateMainCategoriesList();
             
             // -- Create fabric types dropdown

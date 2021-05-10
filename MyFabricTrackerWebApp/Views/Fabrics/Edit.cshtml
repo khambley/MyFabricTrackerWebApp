@@ -47,7 +47,20 @@
                 </div>
             </div>
             <div class="form-group">
-                <partial name="_UploadImage" />
+                @*<partial name="_UploadImage" />*@
+                @await Html.PartialAsync("_UploadImageEdit", Model.ImageFileName)
+                <input type="file" asp-for="ImageFile" class="form-control no-border no-padding-left" onchange="show(this)" />
+                <script type="text/javascript">
+                    function show(input) {
+                        if (input.files && input.files[0]) {
+                            var filereader = new FileReader();
+                            filereader.onload = function (e) {
+                                $('#user_img').attr('src', e.target.result);
+                            }
+                            filereader.readAsDataURL(input.files[0]);
+                        }
+                    }
+                </script>
             </div>
             <div class="row">
                 <div class="col-md-3">

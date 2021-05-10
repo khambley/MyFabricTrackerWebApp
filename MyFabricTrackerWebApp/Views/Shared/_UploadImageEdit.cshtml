@@ -1,0 +1,14 @@
+﻿@model string
+
+<label class="control-label">Upload Image:</label>
+<div class="control-label">
+    @if (Model != null)
+    {
+        <img id="user_img" width="100" src="~/images/@Model" />
+    }
+    else
+    {
+        <img id="user_img" width="100" />
+    }
+</div>
+

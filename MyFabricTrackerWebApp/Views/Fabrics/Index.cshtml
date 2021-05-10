@@ -4,7 +4,20 @@
 @{
     ViewData["Title"] = "Fabric List";
 }
+<script language="javascript">
+    function startBarcodeScanner() {
+        alert("Using client JavaScript to start scanner.");
+        window.location.href = 'bwstw://startscanner?field=SearchString';
 
+    }
+
+    function barcodeValidate(varBarcode) {
+
+        alert('Barcode scanned is: ' + varBarcode);
+
+    }
+
+</script>
 <h3>Fabric List <span><a class="btn btn-success" asp-action="Create">Create New</a></span></h3>
 <div class="row">
     <div class="col-md-12">
@@ -16,15 +29,16 @@
     <div class="col-md-6 col-sm-6">
         <form asp-action="Index" method="get">
             <label class="control-label">Search by Item Code:&nbsp;&nbsp; </label>
-            <input type="text" name="SearchString" id="txtBarcode" class="form-control mb-2 mr-sm-2" value="@ViewData[" CurrentSearch"]" />
+            <input type="text" name="SearchString" id="SearchString" class="form-control mb-2 mr-sm-2" value="@ViewData[" CurrentSearch"]" />
             <input type="submit" value="Search" class="btn btn-primary mb-2" />&nbsp;
             <a asp-action="Index" class="btn btn-primary mb-2">Reset</a>
-            <a href="bwstw://startscanner" class="btn btn-primary mb-2">Scan</a>
-
+            <button onclick="javascript:startBarcodeScanner();" type="button" name="btn2DBarcode" id="Button1" style="height:56px;border-width:0px;">
+                <img src="http://berrywing.com/images/barcode_2d.png" style="height: 50px; width: 50px">
+            </button>
         </form>
     </div>
     <div class="col-md-6 col-sm-6">
-        <p>Sort by:</p> 
+        <p>Sort by:</p>
         <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_asce" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date &#8599;</a>
         <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_desc" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date &#x2198;</a>
         <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_asce" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name A&rarr;Z</a>
@@ -33,31 +47,31 @@
 </div>
 <hr />
 <div class="row">
-@foreach (var item in Model)
-{
-    <div class="col-md-2 col-sm-6 col-xs-6">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-2 col-sm-6 col-xs-6">
 
-        <div class="card" @*style="width: 10rem;"*@>
-            @await Html.PartialAsync("_DisplayImageThumbnail", item.ImageFileName)
-            <ul class="list-group list-group-flush text-small">
-                <li class="list-group-item">#@Html.DisplayFor(modelItem => item.FabricItemCode)</li>
-                <li class="list-group-item">@Html.DisplayFor(modelItem => item.MainCategory.MainCategoryName) > @Html.DisplayFor(modelItem => item.SubCategory.SubCategoryName)</li>
-                <li class="list-group-item">@Html.DisplayFor(modelItem => item.FabricName)</li>
-                <li class="list-group-item"><b>Total Yds: @string.Format("{0:n2}", item.TotalInches / 36.00)</b></li>
-                <li class="list-group-item">Total Fat Qtrs: @Html.DisplayFor(modelItem => item.FatQtrQty)</li>
-                <li class="list-group-item">Date Added: @Html.DisplayFor(modelItem => item.DateAdded)</li>
+            <div class="card" @*style="width: 10rem;"*@>
+                @await Html.PartialAsync("_DisplayImageThumbnail", item.ImageFileName)
+                <ul class="list-group list-group-flush text-small">
+                    <li class="list-group-item">#@Html.DisplayFor(modelItem => item.FabricItemCode)</li>
+                    <li class="list-group-item">@Html.DisplayFor(modelItem => item.MainCategory.MainCategoryName) > @Html.DisplayFor(modelItem => item.SubCategory.SubCategoryName)</li>
+                    <li class="list-group-item">@Html.DisplayFor(modelItem => item.FabricName)</li>
+                    <li class="list-group-item"><b>Total Yds: @string.Format("{0:n2}", item.TotalInches / 36.00)</b></li>
+                    <li class="list-group-item">Total Fat Qtrs: @Html.DisplayFor(modelItem => item.FatQtrQty)</li>
+                    <li class="list-group-item">Date Added: @Html.DisplayFor(modelItem => item.DateAdded)</li>
 
-            </ul>
-            <div class="card-body">
-                <a asp-action="Edit" asp-route-id="@item.FabricID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FabricID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FabricID">Delete</a>
+                </ul>
+                <div class="card-body">
+                    <a asp-action="Edit" asp-route-id="@item.FabricID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.FabricID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.FabricID">Delete</a>
+                </div>
             </div>
         </div>
-    </div>
-}
+    }
 </div>
-@{ 
+@{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
