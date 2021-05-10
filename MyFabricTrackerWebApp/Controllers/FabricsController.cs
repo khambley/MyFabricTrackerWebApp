@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using MyFabricTrackerWebApp.Helpers;
 using MyFabricTrackerWebApp.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -25,20 +26,36 @@ namespace MyFabricTrackerWebApp.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
-
+        #region Fabric List (Index)
         // GET: Fabrics
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+        public async Task<IActionResult> Index(
+            string sortOrder, 
+            string searchString,
+            string currentFilter,
+            int? pageNumber)
         {
-            ViewData["CurrentSearch"] = searchString;
+             
+            ViewData["CurrentSort"] = sortOrder;
 
+            if(searchString != null)
+			{
+                pageNumber = 1;
+			}
+            else
+			{
+                searchString = currentFilter;
+			}
+            ViewData["CurrentFilter"] = searchString;
+            
             var fabrics = _context.Fabrics
                 .Include(f => f.MainCategory)
                 .Include(f => f.SubCategory)
                 .Include(f => f.Source)
                 .Include(f => f.FabricType)
                 .OrderByDescending(f => f.DateAdded);
+            ViewBag.TotalFabricCount = fabrics.Count();
 
-			if (!String.IsNullOrEmpty(searchString))
+            if (!String.IsNullOrEmpty(searchString))
 			{
                 fabrics = (IOrderedQueryable<Fabric>)fabrics
                     .Where(f => f.FabricItemCode.ToUpper().Contains(searchString.ToUpper()));
@@ -62,9 +79,12 @@ namespace MyFabricTrackerWebApp.Controllers
                     break;
 			}
 
-            return View(await fabrics.AsNoTracking().ToListAsync());
+            int pageSize = 12;
+            //return View(await fabrics.AsNoTracking().ToListAsync());
+            return View(await PaginatedList<Fabric>.CreateAsync(fabrics.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
-
+        #endregion
+        #region Fabric Details page (Details)
         // GET: Fabrics/Details/5
         public async Task<IActionResult> Details(long? id)
         {
@@ -87,17 +107,13 @@ namespace MyFabricTrackerWebApp.Controllers
 
             return View(fabric);
         }
+        #endregion
 
+        #region GET: Fabric Create Page (Create)
         // GET: Fabrics/Create
         public IActionResult Create()
         {
-            List<MainCategory> mainCategoryList = new List<MainCategory>();
-
-            // -- Create main categories dropdown
-            mainCategoryList = _context.MainCategories
-                        .OrderBy(mc => mc.MainCategoryName).ToList();
-            mainCategoryList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "Select" });
-            ViewBag.MainCategoryList = mainCategoryList;
+            ViewBag.MainCategoryList = CreateMainCategoriesList();
             
             // -- Create fabric types dropdown
             long fabricTypeId = 0;
@@ -109,7 +125,19 @@ namespace MyFabricTrackerWebApp.Controllers
             
             return View();
         }
-        public JsonResult GetSubCategoryList(int MainCategoryId)
+		#endregion
+        public List<MainCategory> CreateMainCategoriesList()
+		{
+            List<MainCategory> mainCategoryList = new List<MainCategory>();
+
+            // -- Create main categories dropdown
+            mainCategoryList = _context.MainCategories
+                        .OrderBy(mc => mc.MainCategoryName).ToList();
+            mainCategoryList.Insert(0, new MainCategory { MainCategoryId = 0, MainCategoryName = "Select" });
+
+            return mainCategoryList;
+        }
+		public JsonResult GetSubCategoryList(int MainCategoryId)
         {
             List<SubCategory> subCategoryList = new List<SubCategory>();
 
@@ -124,6 +152,8 @@ namespace MyFabricTrackerWebApp.Controllers
 
             return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName"));
         }
+
+        #region POST: Fabric Create Page (Create)
         // POST: Fabrics/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -178,7 +208,9 @@ namespace MyFabricTrackerWebApp.Controllers
             ViewData["FabricTypeId"] = new SelectList(_context.FabricTypes.OrderByDescending(ft => ft.Name), "FabricTypeId", "Name", fabric.FabricTypeId);
             return View(fabric);
         }
-
+        #endregion
+        
+        #region GET: Edit Fabric Page
         // GET: Fabrics/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
@@ -193,17 +225,33 @@ namespace MyFabricTrackerWebApp.Controllers
                 return NotFound();
             }
 
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
-            ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
-            ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
+            ViewBag.MainCategoryList = CreateMainCategoriesList();
+
+            long subCategoryId = fabric.SubCategoryId;
+            // ------ Getting Data from Database Using EF Core ------
+            var subCategoryList = (from subcategory in _context.SubCategories
+                               where subcategory.MainCategoryId == fabric.MainCategoryId
+                               orderby subcategory.SubCategoryName ascending
+                               select subcategory).ToList();
+
+            ViewData["SubCategoryId"] = new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName", subCategoryId);
+
+            // -- Create fabric types dropdown
+            int? fabricTypeId = fabric.FabricTypeId;
+            ViewData["FabricTypeId"] = new SelectList(_context.FabricTypes.OrderByDescending(ft => ft.Name), "Id", "Name", fabricTypeId);
+
+            // Create sources dropdown and add sources to it.
+            int? sourceId = fabric.SourceId;
+            ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", sourceId);
 
             return View(fabric);
         }
+		#endregion
 
-        // POST: Fabrics/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+		// POST: Fabrics/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDeleted")] Fabric fabric)
         {

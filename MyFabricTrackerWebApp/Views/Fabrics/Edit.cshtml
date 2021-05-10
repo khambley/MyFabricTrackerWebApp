@@ -1,25 +1,86 @@
 ﻿@model MyFabricTrackerWebApp.Models.Fabric
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Fabric";
 }
 
-<h1>Edit</h1>
-
-<h4>Fabric</h4>
+<h4>Edit Fabric...</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="FabricID" />
+
+            <partial name="_ChooseCategory.cshtml" />
+
             <div class="form-group">
-                <label asp-for="FabricItemCode" class="control-label"></label>
-                <input asp-for="FabricItemCode" class="form-control" />
-                <span asp-validation-for="FabricItemCode" class="text-danger"></span>
+                <label class="control-label">Type</label>
+                <select asp-for="FabricTypeId" class="form-control" asp-items="ViewBag.FabricTypeId">
+                    <option value="">Select a type...</option>
+                </select>
+                <span asp-validation-for="FabricType" class="text-danger"></span>
+                <a class="btn btn-primary" asp-action="Create" asp-controller="FabricTypes">Create New Fabric Type</a>
             </div>
             <div class="form-group">
-                <label asp-for="FabricName" class="control-label"></label>
+                <label asp-for="SourceId" class="control-label">Source</label>
+                <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
+                    <option value="">Select a source...</option>
+                </select>
+                <a class="btn btn-primary" asp-action="Create" asp-controller="Sources">Create New Source</a>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsPopular" /> Popular?
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsDiscontinued" /> Discontinued?
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <partial name="_UploadImage" />
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Background<br />Color</label>
+                        <input asp-for="BackgroundColor" class="form-control" />
+                        <span asp-validation-for="BackgroundColor" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Accent<br />Color 1</label>
+                        <input asp-for="AccentColor1" class="form-control" />
+                        <span asp-validation-for="AccentColor1" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Accent<br />Color 2</label>
+                        <input asp-for="AccentColor2" class="form-control" />
+                        <span asp-validation-for="AccentColor2" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label">Accent<br />Color 3</label>
+                        <input asp-for="AccentColor3" class="form-control" />
+                        <span asp-validation-for="AccentColor3" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Name</label>
                 <input asp-for="FabricName" class="form-control" />
                 <span asp-validation-for="FabricName" class="text-danger"></span>
             </div>
@@ -34,48 +95,30 @@
                 <span asp-validation-for="Designer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageFileName" class="control-label"></label>
-                <input asp-for="ImageFileName" class="form-control" />
-                <span asp-validation-for="ImageFileName" class="text-danger"></span>
+                <label asp-for="DateReleased" class="control-label"></label>
+                <input asp-for="DateReleased" class="form-control" />
+                <span asp-validation-for="DateReleased" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MainCategoryId" class="control-label"></label>
-                <select asp-for="MainCategoryId" class="form-control" asp-items="ViewBag.MainCategoryId"></select>
-                <span asp-validation-for="MainCategoryId" class="text-danger"></span>
+                <label class="control-label">Width</label>
+                <input asp-for="FabricWidth" class="form-control" />
+                <span asp-validation-for="FabricWidth" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SubCategoryId" class="control-label"></label>
-                <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
-                <span asp-validation-for="SubCategoryId" class="text-danger"></span>
+                <label class="control-label">Initial Qty (inches):</label>
+                <input type="number" asp-for="TotalInches" class="form-control" />
+                <span asp-validation-for="TotalInches" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FabricType" class="control-label"></label>
-                <input asp-for="FabricType" class="form-control" />
-                <span asp-validation-for="FabricType" class="text-danger"></span>
+                <label class="control-label">Fat Qtr Qty (if any):</label>
+                <input type="number" asp-for="FatQtrQty" class="form-control" />
+                <span asp-validation-for="FatQtrQty" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FabricNotes" class="control-label"></label>
-                <input asp-for="FabricNotes" class="form-control" />
+                <label class="control-label">Notes</label>
+                <textarea asp-for="FabricNotes" class="form-control"></textarea>
                 <span asp-validation-for="FabricNotes" class="text-danger"></span>
             </div>
-
-            <div class="form-group">
-                <label asp-for="SourceId" class="control-label">Source</label>
-                <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
-                    <option value="">Select a fabric...</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateAdded" class="control-label"></label>
-                <input asp-for="DateAdded" class="form-control" />
-                <span asp-validation-for="DateAdded" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateModified" class="control-label"></label>
-                <input asp-for="DateModified" class="form-control" />
-                <span asp-validation-for="DateModified" class="text-danger"></span>
-            </div>
-     
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -86,4 +129,70 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+@*<div class="form-group">
+        <label asp-for="FabricItemCode" class="control-label"></label>
+        <input asp-for="FabricItemCode" class="form-control" />
+        <span asp-validation-for="FabricItemCode" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FabricName" class="control-label"></label>
+        <input asp-for="FabricName" class="form-control" />
+        <span asp-validation-for="FabricName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Brand</label>
+        <input asp-for="Brand" class="form-control" />
+        <span asp-validation-for="Brand" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Designer</label>
+        <input asp-for="Designer" class="form-control" />
+        <span asp-validation-for="Designer" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ImageFileName" class="control-label"></label>
+        <input asp-for="ImageFileName" class="form-control" />
+        <span asp-validation-for="ImageFileName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MainCategoryId" class="control-label"></label>
+        <select asp-for="MainCategoryId" class="form-control" asp-items="ViewBag.MainCategoryId"></select>
+        <span asp-validation-for="MainCategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SubCategoryId" class="control-label"></label>
+        <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
+        <span asp-validation-for="SubCategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FabricType" class="control-label"></label>
+        <input asp-for="FabricType" class="form-control" />
+        <span asp-validation-for="FabricType" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FabricNotes" class="control-label"></label>
+        <input asp-for="FabricNotes" class="form-control" />
+        <span asp-validation-for="FabricNotes" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SourceId" class="control-label">Source</label>
+        <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
+            <option value="">Select a fabric...</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateAdded" class="control-label"></label>
+        <input asp-for="DateAdded" class="form-control" />
+        <span asp-validation-for="DateAdded" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="DateModified" class="control-label"></label>
+        <input asp-for="DateModified" class="form-control" />
+        <span asp-validation-for="DateModified" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>*@
 

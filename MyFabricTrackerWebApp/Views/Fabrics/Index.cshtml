@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MyFabricTrackerWebApp.Models.Fabric>
+﻿@model MyFabricTrackerWebApp.Helpers.PaginatedList<MyFabricTrackerWebApp.Models.Fabric>
+
 
 @{
     ViewData["Title"] = "Fabric List";
@@ -6,23 +7,28 @@
 
 <h3>Fabric List <span><a class="btn btn-success" asp-action="Create">Create New</a></span></h3>
 <div class="row">
-    <div class="col-md-12 col-sm-12">
-        <form class="form-inline" asp-action="Index" method="get">
-            <label class="control-label">Search by Item Code:&nbsp;&nbsp; </label>
-            <input type="text" name="SearchString" class="form-control mb-2 mr-sm-2" value="@ViewData[" CurrentSearch"]" />
-            <input type="submit" value="Search" class="btn btn-primary mb-2" />&nbsp;
-            <a asp-action="Index" class="btn btn-primary mb-2">Reset</a>
-        </form>
+    <div class="col-md-12">
+        Total Fabrics Count: @ViewBag.TotalFabricCount
     </div>
 </div>
 <br />
 <div class="row">
-    <div class="col-md-12 col-sm-12">
-        Sort by: <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_asce">Date &#8599;</a>
-                 <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_desc">Date &#x2198;</a>
-                 <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_asce">Name A&rarr;Z</a>
-                 <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_desc">Name Z&rarr;A</a>
-    </div>  
+    <div class="col-md-6 col-sm-6">
+        <form asp-action="Index" method="get">
+            <label class="control-label">Search by Item Code:&nbsp;&nbsp; </label>
+            <input type="text" name="SearchString" id="txtBarcode" class="form-control mb-2 mr-sm-2" value="@ViewData[" CurrentSearch"]" />
+            <input type="submit" value="Search" class="btn btn-primary mb-2" />&nbsp;
+            <a asp-action="Index" class="btn btn-primary mb-2">Reset</a>
+
+        </form>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <p>Sort by:</p> 
+        <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_asce" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date &#8599;</a>
+        <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="date_desc" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date &#x2198;</a>
+        <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_asce" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name A&rarr;Z</a>
+        <a asp-action="Index" class="btn btn-primary" asp-route-sortOrder="name_desc" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Z&rarr;A</a>
+    </div>
 </div>
 <hr />
 <div class="row">
@@ -50,85 +56,22 @@
     </div>
 }
 </div>
-
-
-@*<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Image
-                
-            </th>
-            <th>
-                Item Code   
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Main<br />Category
-            </th>
-            <th>
-                Sub<br />Category
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Width
-            </th>
-            <th>
-                Total<br />Yds
-            </th>
-            <th>
-               Date<br />Added
-            </th>
-            <th>
-               Date<br />Modified
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @await Html.PartialAsync("_DisplayImageThumbnail", item.ImageFileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FabricItemCode)
-                
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FabricName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MainCategory.MainCategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubCategory.SubCategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FabricType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FabricWidth)
-            </td>
-            <td>
-                @string.Format("{0:n2}", item.TotalInches / 36.00)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateAdded)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateModified)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FabricID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FabricID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FabricID">Delete</a>
-            </td>
-        </tr>
+@{ 
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-    </tbody>
-</table>*@
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>

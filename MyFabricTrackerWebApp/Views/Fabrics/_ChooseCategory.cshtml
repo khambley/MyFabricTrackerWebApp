@@ -42,8 +42,9 @@
     <div class="alert-danger" asp-validation-summary="ModelOnly"></div>
     <label class="control-label">Main Category</label>
     <select asp-for="MainCategoryId"
-            class="form-control"
-            asp-items="@(new SelectList(@ViewBag.MainCategoryList, "MainCategoryId", "MainCategoryName"))"></select>
+                class="form-control"
+                asp-items="@(new SelectList(@ViewBag.MainCategoryList, "MainCategoryId", "MainCategoryName"))">
+    </select>
     <span asp-validation-for="MainCategoryId" class="text-danger"></span>
     <a class="btn btn-primary" asp-action="Create" asp-controller="MainCategories">Create New MainCategory</a>
 </div>
