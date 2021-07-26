@@ -29,7 +29,7 @@
     <div class="col-md-6 col-sm-6">
         <form asp-action="Index" method="get">
             <label class="control-label">Search by Item Code:&nbsp;&nbsp; </label>
-            <input type="text" name="SearchString" id="SearchString" class="form-control mb-2 mr-sm-2" value="@ViewData[" CurrentSearch"]" />
+            <input type="text" name="SearchString" id="SearchString" class="form-control mb-2 mr-sm-2" value="@ViewData["CurrentSearch"]" />
             <input type="submit" value="Search" class="btn btn-primary mb-2" />&nbsp;
             <a asp-action="Index" class="btn btn-primary mb-2">Reset</a>
             <button onclick="javascript:startBarcodeScanner();" type="button" name="btn2DBarcode" id="Button1" style="height:56px;border-width:0px;">

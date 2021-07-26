@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using MyFabricTrackerWebApp.Helpers;
 using MyFabricTrackerWebApp.Models;
+using MyFabricTrackerWebApp.Services;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
@@ -18,11 +19,13 @@ namespace MyFabricTrackerWebApp.Controllers
 {
     public class FabricsController : Controller
     {
+        private readonly IFabricService _fabricService;
         private readonly FabricTrackerDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public FabricsController(FabricTrackerDbContext context, IWebHostEnvironment webHostEnvironment)
+        public FabricsController(IFabricService fabricService, FabricTrackerDbContext context, IWebHostEnvironment webHostEnvironment)
         {
+            _fabricService = fabricService;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
@@ -34,10 +37,14 @@ namespace MyFabricTrackerWebApp.Controllers
             string currentFilter,
             int? pageNumber)
         {
-             
-            ViewData["CurrentSort"] = sortOrder;
+            // Get all fabrics
+            var fabrics = _fabricService.GetFabrics();
 
-            if(searchString != null)
+            // Get Fabric count
+            ViewBag.TotalFabricCount = fabrics.Count();
+
+            // Set page number
+            if (searchString != null)
 			{
                 pageNumber = 1;
 			}
@@ -45,47 +52,27 @@ namespace MyFabricTrackerWebApp.Controllers
 			{
                 searchString = currentFilter;
 			}
-            ViewData["CurrentFilter"] = searchString;
             
-            var fabrics = _context.Fabrics
-                .Include(f => f.MainCategory)
-                .Include(f => f.SubCategory)
-                .Include(f => f.Source)
-                .Include(f => f.FabricType)
-                .OrderByDescending(f => f.DateAdded);
-            ViewBag.TotalFabricCount = fabrics.Count();
+            ViewData["CurrentFilter"] = searchString;
 
+            // Get Fabrics By search term
             if (!String.IsNullOrEmpty(searchString))
 			{
-                fabrics = (IOrderedQueryable<Fabric>)fabrics
-                    .Where(f => f.FabricItemCode.ToUpper().Contains(searchString.ToUpper()));
-			}
-            switch (sortOrder)
-			{
-                case "name_desc":
-                    fabrics = fabrics.OrderByDescending(f => f.FabricName);
-                    break;
-                case "name_asce":
-                    fabrics = fabrics.OrderBy(f => f.FabricName);
-                    break;
-                case "date_asce":
-                    fabrics = fabrics.OrderBy(f => f.DateAdded);
-                    break;
-                case "date_desc":
-                    fabrics = fabrics.OrderByDescending(f => f.DateAdded);
-                    break;
-                default:
-                    fabrics = fabrics.OrderByDescending(f => f.DateAdded);
-                    break;
+                fabrics = _fabricService.GetFabricsBySearchTerm(fabrics, searchString);
 			}
 
+            ViewData["CurrentSort"] = sortOrder;
+
+            // Sort Fabrics by Name and Date
+            fabrics = _fabricService.SortFabrics(fabrics, sortOrder);
+
             int pageSize = 12;
-            //return View(await fabrics.AsNoTracking().ToListAsync());
+            
             return View(await PaginatedList<Fabric>.CreateAsync(fabrics.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
         #endregion
-        #region Fabric Details page (Details)
-        // GET: Fabrics/Details/5
+        #region Fabric Detail
+        
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -93,12 +80,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 return NotFound();
             }
 
-            var fabric = await _context.Fabrics
-                .Include(f => f.MainCategory)
-                .Include(f => f.SubCategory)
-                .Include(f => f.Source)
-                .Include(f => f.FabricType)
-                .FirstOrDefaultAsync(m => m.FabricID == id);
+            var fabric = await _fabricService.GetFabricById(id);
 
             if (fabric == null)
             {
@@ -163,7 +145,7 @@ namespace MyFabricTrackerWebApp.Controllers
         public async Task<IActionResult> Create([Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricWidth,BackgroundColor,FabricNotes,AccentColor1,AccentColor2,SourceId,FabricTypeId,AccentColor3,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDiscontinued,IsDeleted,IsPopular,TotalInches,FatQtrQty")] Fabric fabric, IFormFile imageFile)
         {
             //Set the auto-generated Item Code 
-            fabric.FabricItemCode = CreateUniqueItemCode();
+            fabric.FabricItemCode = _fabricService.CreateUniqueItemCode();
 
 			try
 			{
@@ -336,44 +318,6 @@ namespace MyFabricTrackerWebApp.Controllers
                 + Guid.NewGuid().ToString().Substring(0, 4)
                 + Path.GetExtension(fileName);
         }
-        private string CreateUniqueItemCode()
-        {
-            var lastFabricinDB = _context.Fabrics
-                .OrderByDescending(f => f.FabricID)
-                .FirstOrDefault();
-           
-            var newFabricId = lastFabricinDB != null ? lastFabricinDB.FabricID + 1 : 1;
-
-            string leadingZeroes = "";
-
-            if (newFabricId > 0 && newFabricId < 10)
-            {
-                leadingZeroes = "0000";
-            }
-            else if (newFabricId > 9 && newFabricId < 100)
-            {
-                leadingZeroes = "000";
-            }
-            else if (newFabricId > 99 && newFabricId < 1000)
-            {
-                leadingZeroes = "00";
-            }
-            else if (newFabricId > 999 && newFabricId < 10000)
-            {
-                leadingZeroes = "0";
-            }
-            else
-            {
-                leadingZeroes = "";
-            }
-            var uniqueFabricItemCode = "FAB" 
-                + "-"
-                + leadingZeroes
-                + newFabricId.ToString()
-                + "-"
-                + Guid.NewGuid().ToString().ToUpper().Substring(0, 4);
-
-            return uniqueFabricItemCode;
-        }
+        
     }
 }

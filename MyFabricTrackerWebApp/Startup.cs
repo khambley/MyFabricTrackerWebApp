@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyFabricTrackerWebApp.Models;
+using MyFabricTrackerWebApp.Services;
 
 namespace MyFabricTrackerWebApp
 {
@@ -32,6 +33,7 @@ namespace MyFabricTrackerWebApp
 				opts.UseSqlServer(
 				Configuration["ConnectionStrings:DefaultConnection"]);
 			});
+			services.AddScoped<IFabricService, FabricService>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
