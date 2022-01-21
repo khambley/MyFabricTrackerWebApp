@@ -106,41 +106,41 @@ namespace MyFabricTrackerWebApp.Controllers
                 long? totalInches = 0;
                 long? totalFatQtrs = 0;
 
-                if (fabricToUpdate.TotalInches == null)
+                if (fabricToUpdate.TotalInches == null && transaction.InchesQty != null)
                 {
                     totalInches = transaction.InchesQty;
-                }
-                else
-                {
+                    fabricToUpdate.TotalInches = totalInches;
+                } 
+                else if(fabricToUpdate.TotalInches != null && transaction.InchesQty != null)
+				{
                     totalInches = fabricToUpdate.TotalInches + transaction.InchesQty;
+                    fabricToUpdate.TotalInches = totalInches;
+                }
+                else if(fabricToUpdate.TotalInches != null && transaction.InchesQty == null)
+                {
+                    totalInches = fabricToUpdate.TotalInches;
+                    fabricToUpdate.TotalInches = totalInches;
                 }
 
-                if (fabricToUpdate.FatQtrQty == null)
+				if (fabricToUpdate.FatQtrQty == null && transaction.FatQtrQty != null)
 				{
-                    totalFatQtrs = transaction.FatQtrQty;
+					totalFatQtrs = transaction.FatQtrQty;
+                    fabricToUpdate.FatQtrQty = totalFatQtrs;
                 }
-                else
+				else if (fabricToUpdate.FatQtrQty != null && transaction.FatQtrQty != null)
 				{
-                    totalFatQtrs = fabricToUpdate.FatQtrQty + transaction.FatQtrQty;
+					totalFatQtrs = fabricToUpdate.FatQtrQty + transaction.FatQtrQty;
+                    fabricToUpdate.FatQtrQty = totalFatQtrs;
+                }
+				else if (fabricToUpdate.FatQtrQty != null && transaction.FatQtrQty == null)
+				{
+					totalFatQtrs = fabricToUpdate.FatQtrQty;
+                    fabricToUpdate.FatQtrQty = totalFatQtrs;
                 }
 
-                fabricToUpdate.TotalInches = totalInches;
-                fabricToUpdate.FatQtrQty = totalFatQtrs;
                 fabricToUpdate.DateModified = transaction.TransactionDate;
 
-                if (await TryUpdateModelAsync<Fabric>(fabricToUpdate, "", f => f.TotalInches, f => f.DateModified, f => f.FatQtrQty))
-                {
-                    try
-                    {
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateException /*ex*/)
-                    {
-                        ModelState.AddModelError("", "Unable to save changes. " +
-                            "Try again, and if the problem persists, " +
-                            "see your system administrator.");
-                    }
-                }
+                _context.Update(fabricToUpdate);
 
                 _context.Add(transaction);
 

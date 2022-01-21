@@ -1,0 +1,37 @@
+﻿@model MyFabricTrackerWebApp.Models.Transaction
+
+<h4>Create Inventory Adjustment</h4>
+<form asp-action="Create" asp-controller="Transactions">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="FabricId" />
+
+    <div class="form-group">
+        <label asp-for="InchesQty" class="control-label">(+ / -) Inches</label>
+        <input type="number" step="0.01" asp-for="InchesQty" class="form-control" />
+        <span asp-validation-for="InchesQty" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="FatQtrQty" class="control-label">(+ / -) Fat Quarter</label>
+        <input type="number" step="0.01" asp-for="FatQtrQty" class="form-control" />
+        <span asp-validation-for="FatQtrQty" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Reason" class="control-label">Reason</label>
+        <input asp-for="Reason" class="form-control" />
+        <span asp-validation-for="Reason" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="TransactionDate" class="control-label">Transaction Date</label>
+        <input type="date" asp-for="TransactionDate" class="form-control" />
+        <span asp-validation-for="TransactionDate" class="text-danger"></span>
+    </div>
+    @*<div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+            </label>
+        </div>*@
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>

@@ -203,11 +203,23 @@ namespace MyFabricTrackerWebApp.Controllers
             }
 
             var fabric = await _context.Fabrics.FindAsync(id);
+
             if (fabric == null)
             {
                 return NotFound();
             }
 
+            if(fabric.TotalInches == null)
+			{
+                ViewBag.TotalInches = 0.00;
+			} 
+            else
+			{
+                ViewBag.TotalInches = fabric.TotalInches;
+
+            }
+      
+            ViewBag.TotalFatQtrs = fabric.FatQtrQty;
             ViewBag.MainCategoryList = CreateMainCategoriesList();
 
             long subCategoryId = fabric.SubCategoryId;

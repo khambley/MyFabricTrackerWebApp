@@ -3,15 +3,29 @@
 @{
     ViewData["Title"] = "Edit Fabric";
 }
+<div class="row">
+    <div class="col-md-2">
+        @await Html.PartialAsync("_UploadImageEdit", Model.ImageFileName)
+    </div>
+    <div class="col-md-3">
+        <h5>Total Yds: <u>@string.Format("{0:n2}", ViewBag.TotalInches / 36.00)</u></h5>
+        <h5>Total Fat Qtrs: <u>@ViewBag.TotalFatQtrs</u></h5>
+        <h5>Name: @Model.FabricName</h5>
+    </div>
+    <div class="col-md-3">
+       
+    </div>
+</div>
 
-<h4>Edit Fabric...</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <form asp-action="Edit" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <input type="hidden" asp-for="FabricID" />
+
+            <h4>Edit Fabric Information</h4>
 
             <partial name="_ChooseCategory.cshtml" />
 
@@ -47,7 +61,7 @@
                 </div>
             </div>
             <div class="form-group">
-                @*<partial name="_UploadImage" />*@
+                <label class="control-label">Upload Image:</label>
                 @await Html.PartialAsync("_UploadImageEdit", Model.ImageFileName)
                 <input type="file" asp-for="ImageFile" class="form-control no-border no-padding-left" onchange="show(this)" />
                 <script type="text/javascript">
@@ -117,16 +131,7 @@
                 <input asp-for="FabricWidth" class="form-control" />
                 <span asp-validation-for="FabricWidth" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label class="control-label">Initial Qty (inches):</label>
-                <input type="number" asp-for="TotalInches" class="form-control" />
-                <span asp-validation-for="TotalInches" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Fat Qtr Qty (if any):</label>
-                <input type="number" asp-for="FatQtrQty" class="form-control" />
-                <span asp-validation-for="FatQtrQty" class="text-danger"></span>
-            </div>
+
             <div class="form-group">
                 <label class="control-label">Notes</label>
                 <textarea asp-for="FabricNotes" class="form-control"></textarea>
@@ -137,75 +142,17 @@
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-@*<div class="form-group">
-        <label asp-for="FabricItemCode" class="control-label"></label>
-        <input asp-for="FabricItemCode" class="form-control" />
-        <span asp-validation-for="FabricItemCode" class="text-danger"></span>
+    <div class="col-md-1"></div>
+    <div class="col-md-5">
+        
+        @await Html.PartialAsync("_CreateTransaction", new Transaction { 
+            FabricId = Model.FabricID,
+            TransactionDate = DateTime.Today 
+   })
     </div>
-    <div class="form-group">
-        <label asp-for="FabricName" class="control-label"></label>
-        <input asp-for="FabricName" class="form-control" />
-        <span asp-validation-for="FabricName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Brand</label>
-        <input asp-for="Brand" class="form-control" />
-        <span asp-validation-for="Brand" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Designer</label>
-        <input asp-for="Designer" class="form-control" />
-        <span asp-validation-for="Designer" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ImageFileName" class="control-label"></label>
-        <input asp-for="ImageFileName" class="form-control" />
-        <span asp-validation-for="ImageFileName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="MainCategoryId" class="control-label"></label>
-        <select asp-for="MainCategoryId" class="form-control" asp-items="ViewBag.MainCategoryId"></select>
-        <span asp-validation-for="MainCategoryId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="SubCategoryId" class="control-label"></label>
-        <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
-        <span asp-validation-for="SubCategoryId" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FabricType" class="control-label"></label>
-        <input asp-for="FabricType" class="form-control" />
-        <span asp-validation-for="FabricType" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="FabricNotes" class="control-label"></label>
-        <input asp-for="FabricNotes" class="form-control" />
-        <span asp-validation-for="FabricNotes" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="SourceId" class="control-label">Source</label>
-        <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
-            <option value="">Select a fabric...</option>
-        </select>
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
-    <div class="form-group">
-        <label asp-for="DateAdded" class="control-label"></label>
-        <input asp-for="DateAdded" class="form-control" />
-        <span asp-validation-for="DateAdded" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="DateModified" class="control-label"></label>
-        <input asp-for="DateModified" class="form-control" />
-        <span asp-validation-for="DateModified" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
-    </div>*@
 
