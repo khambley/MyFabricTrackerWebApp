@@ -12,8 +12,9 @@
         <h5>Total Fat Qtrs: <u>@ViewBag.TotalFatQtrs</u></h5>
         <h5>Name: @Model.FabricName</h5>
     </div>
-    <div class="col-md-3">
-       
+    <div class="col-md-5">
+        <h5>Item Code: @ViewBag.FabricItemCode</h5>
+        <h5>Category: @ViewBag.MainCategory > @ViewBag.SubCategoryName</h5>
     </div>
 </div>
 
@@ -24,13 +25,21 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <input type="hidden" asp-for="FabricID" />
+            <input type="hidden" asp-for="TotalInches" />
+            <input type="hidden" asp-for="DateAdded" />
+            <input type="hidden" asp-for="FabricItemCode" />
+            <input type="hidden" asp-for="FatQtrQty" />
+
 
             <h4>Edit Fabric Information</h4>
 
-            <partial name="_ChooseCategory.cshtml" />
-
+            @*<partial name="_ChooseCategory.cshtml" />*@
+            <h5>Current Categories: @ViewBag.MainCategory / @ViewBag.SubCategoryName</h5>
+            <p>Choose new Categories:</p>
+            @await Html.PartialAsync("_ChooseCategory", Model)
+            <hr />
             <div class="form-group">
-                <label class="control-label">Type</label>
+                <label class="control-label">Type*</label>
                 <select asp-for="FabricTypeId" class="form-control" asp-items="ViewBag.FabricTypeId">
                     <option value="">Select a type...</option>
                 </select>
@@ -38,7 +47,7 @@
                 <a class="btn btn-primary" asp-action="Create" asp-controller="FabricTypes">Create New Fabric Type</a>
             </div>
             <div class="form-group">
-                <label asp-for="SourceId" class="control-label">Source</label>
+                <label asp-for="SourceId" class="control-label">Source*</label>
                 <select asp-for="SourceId" class="form-control" asp-items="ViewBag.SourceId">
                     <option value="">Select a source...</option>
                 </select>
@@ -61,15 +70,18 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label">Upload Image:</label>
+                <label class="control-label">Current Image Name: @Model.ImageFileName</label>
                 @await Html.PartialAsync("_UploadImageEdit", Model.ImageFileName)
-                <input type="file" asp-for="ImageFile" class="form-control no-border no-padding-left" onchange="show(this)" />
+                <br />
+                Upload New Image:
+                <input type="file" asp-for="ImageFile" id="image_file" class="form-control no-border no-padding-left" onchange="show(this)" />
                 <script type="text/javascript">
                     function show(input) {
                         if (input.files && input.files[0]) {
                             var filereader = new FileReader();
                             filereader.onload = function (e) {
                                 $('#user_img').attr('src', e.target.result);
+                                $('#image_file').val(e.target.result);
                             }
                             filereader.readAsDataURL(input.files[0]);
                         }
@@ -107,7 +119,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label">Name</label>
+                <label class="control-label">Name*</label>
                 <input asp-for="FabricName" class="form-control" />
                 <span asp-validation-for="FabricName" class="text-danger"></span>
             </div>
@@ -140,6 +152,7 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
         </form>
     </div>
     <div class="col-md-1"></div>

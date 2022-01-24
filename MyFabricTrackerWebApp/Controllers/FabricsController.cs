@@ -120,7 +120,7 @@ namespace MyFabricTrackerWebApp.Controllers
 
             return mainCategoryList;
         }
-		public JsonResult GetSubCategoryList(int MainCategoryId)
+		public JsonResult GetSubCategoryList(int MainCategoryId, Fabric fabric = null)
         {
             List<SubCategory> subCategoryList = new List<SubCategory>();
 
@@ -132,10 +132,45 @@ namespace MyFabricTrackerWebApp.Controllers
 
             // ------ Inserting SubCategory Select Items into List
             subCategoryList.Insert(0, new SubCategory { SubCategoryId = 0, SubCategoryName = "Select" });
-
-            return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName"));
+            if (fabric != null)
+            {
+                return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId));
+            } else
+			{
+                return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName"));
+            }
+            
         }
 
+        public JsonResult GetSubCategoryListEdit(int MainCategoryId, Fabric fabric = null)
+        {
+            List<SubCategory> subCategoryList = new List<SubCategory>();
+
+            // ------ Getting Data from Database Using EF Core ------
+            subCategoryList = (from subcategory in _context.SubCategories
+                               where subcategory.MainCategoryId == MainCategoryId
+                               orderby subcategory.SubCategoryName ascending
+                               select subcategory).ToList();
+
+            // ------ Inserting SubCategory Select Items into List
+            subCategoryList.Insert(0, new SubCategory { SubCategoryId = 0, SubCategoryName = "Select" });
+            if(fabric != null)
+			{
+                return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId));
+            }
+            return Json(new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName"));
+        }
+        public List<SubCategory> CreateSubCategoriesList(long mainCategoryId)
+		{
+            List<SubCategory> subCategoryList = new List<SubCategory>();
+
+            subCategoryList = (from subcategory in _context.SubCategories
+                                where subcategory.MainCategoryId == mainCategoryId
+                                orderby subcategory.SubCategoryName ascending
+                                select subcategory).ToList();
+
+            return subCategoryList;
+        }
         #region POST: Fabric Create Page (Create)
         // POST: Fabrics/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -203,7 +238,7 @@ namespace MyFabricTrackerWebApp.Controllers
             }
 
             var fabric = await _context.Fabrics.FindAsync(id);
-
+           
             if (fabric == null)
             {
                 return NotFound();
@@ -218,18 +253,22 @@ namespace MyFabricTrackerWebApp.Controllers
                 ViewBag.TotalInches = fabric.TotalInches;
 
             }
-      
+            ViewBag.FabricItemCode = fabric.FabricItemCode;
             ViewBag.TotalFatQtrs = fabric.FatQtrQty;
+
             ViewBag.MainCategoryList = CreateMainCategoriesList();
 
-            long subCategoryId = fabric.SubCategoryId;
-            // ------ Getting Data from Database Using EF Core ------
-            var subCategoryList = (from subcategory in _context.SubCategories
-                               where subcategory.MainCategoryId == fabric.MainCategoryId
-                               orderby subcategory.SubCategoryName ascending
-                               select subcategory).ToList();
+            ViewBag.SubCategoryName = _context.SubCategories.Where(sc => sc.SubCategoryId == fabric.SubCategoryId).Select(name => name.SubCategoryName).FirstOrDefault();
 
-            ViewData["SubCategoryId"] = new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName", subCategoryId);
+            ViewBag.MainCategory = _context.MainCategories.Where(mc => mc.MainCategoryId == fabric.MainCategoryId).Select(name => name.MainCategoryName).FirstOrDefault();
+
+            long subCategoryId = fabric.SubCategoryId;
+
+            ViewBag.ImageFileName = fabric.ImageFileName;
+            // ------ Getting Data from Database Using EF Core ------
+
+            ViewBag.SubCategoryList = CreateSubCategoriesList(fabric.MainCategoryId);
+            //ViewData["SubCategoryId"] = new SelectList(subCategoryList, "SubCategoryId", "SubCategoryName", subCategoryId);
 
             // -- Create fabric types dropdown
             int? fabricTypeId = fabric.FabricTypeId;
@@ -241,21 +280,67 @@ namespace MyFabricTrackerWebApp.Controllers
 
             return View(fabric);
         }
-		#endregion
+        #endregion
 
-		// POST: Fabrics/Edit/5
-		// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-		// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-		[HttpPost]
+        // POST: Fabrics/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDeleted")] 
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,FabricType,FabricNotes,FabricSourceName,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDeleted")] Fabric fabric)
+        public async Task<IActionResult> Edit(long id, [Bind("FabricID,FabricItemCode,FabricName,ImageFileName,MainCategoryId,SubCategoryId,TotalInches,FatQtrQty,FabricTypeId,Brand,Designer,FabricWidth,FabricNotes,SourceId,FabricSourceName,FabricSourceUrl,DateReleased,DateAdded,DateModified,IsDeleted,IsPopular,BackgroundColor,AccentColor1,AccentColor2,AccentColor3")] Fabric fabric, IFormFile imageFile)
         {
-            fabric.DateAdded = DateTime.Now;
+            fabric.DateModified = DateTime.Now;
+
             if (id != fabric.FabricID)
             {
                 return NotFound();
             }
+            var existingSubCategoryId = _context.Fabrics.Where(f => f.FabricID == id).Select(sc => sc.SubCategoryId).FirstOrDefault();
 
+            if(fabric.SubCategoryId == 0 && existingSubCategoryId > 0)
+			{
+                fabric.SubCategoryId = existingSubCategoryId;
+			}
+
+            var existingImageFileName = _context.Fabrics.Where(f => f.FabricID == id).Select(fn => fn.ImageFileName).FirstOrDefault();
+            
+            if (existingImageFileName != null && imageFile == null)
+            {
+                fabric.ImageFileName = existingImageFileName;
+            }
+            else
+			{
+                try
+                {
+                    if (imageFile != null)
+                    {
+                        string webRootPath = _webHostEnvironment.WebRootPath;
+
+                        //Set the Image File Name (generated using FabricItemCode) to prevent overwriting files with same name
+                        var uniqueFileName = fabric.FabricItemCode + Path.GetExtension(imageFile.FileName);
+
+                        using (var image = Image.Load(imageFile.OpenReadStream()))
+                        {
+                            int width = image.Width / 2;
+                            int height = image.Height / 2;
+
+                            image.Mutate(x => x.Resize(width, height));
+                            var filePath = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")).Root + $@"\{uniqueFileName}";
+
+                            image.Save(filePath);
+                        }
+
+                        fabric.ImageFileName = uniqueFileName;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                }
+            }
+            
             if (ModelState.IsValid)
             {
                 try
@@ -277,7 +362,7 @@ namespace MyFabricTrackerWebApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName", fabric.MainCategoryId);
+            ViewData["MainCategoryId"] = new SelectList(_context.MainCategories, "MainCategoryId", "MainCategoryName");
             ViewData["SubCategoryId"] = new SelectList(_context.SubCategories, "SubCategoryId", "SubCategoryName", fabric.SubCategoryId);
             ViewData["SourceId"] = new SelectList(_context.Sources, "SourceId", "SourceName", fabric.SourceId);
             return View(fabric);

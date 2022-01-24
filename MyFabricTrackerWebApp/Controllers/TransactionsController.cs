@@ -146,7 +146,7 @@ namespace MyFabricTrackerWebApp.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Fabrics");
             }
 
             ViewData["FabricId"] = new SelectList(_context.Fabrics, "FabricID", "FabricName", transaction.FabricId);
