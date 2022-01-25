@@ -40,7 +40,15 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @await Html.PartialAsync("_DisplayImageThumbnail", item.Fabric.ImageFileName)
+                @*@await Html.PartialAsync("_DisplayImageThumbnail", item.Fabric.ImageFileName)*@
+                @if (item.Fabric.ImageFileName != null)
+                {
+                    <img style="width: 100px" src="~/images/@item.Fabric.ImageFileName" />
+                }
+                else
+                {
+                    <img style="width: 100px" src="https://via.placeholder.com/150X150?text=No+Image" />
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Fabric.FabricItemCode)
