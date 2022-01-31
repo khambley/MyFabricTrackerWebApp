@@ -51,7 +51,7 @@
 <div class="form-group">
     <label class="control-label">SubCategory*</label>
     <select class="form-control" id="SubCategoryId" name="SubCategoryId" asp-for="SubCategoryId"
-            asp-items="@(new SelectList(ViewBag.SubCategoryList, "SubCategoryId", "SubCategoryName"))"></select>
+            asp-items="@(new SelectList(string.Empty, "SubCategoryId", "SubCategoryName"))"></select>
     <span asp-validation-for="SubCategoryId" class="text-danger"></span>
     <a class="btn btn-primary" asp-action="Create" asp-controller="SubCategories">Create New SubCategory</a>
 </div>
